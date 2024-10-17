@@ -95,7 +95,7 @@ const selectSubsection = (subsection: string, section: string) => {
 /* Estilos del sidebar */
 .sidebar {
   width: 250px;
-  background-color: #2c3e50;
+  background-color: #273b4e;
   color: white;
   height: calc(100vh - 50px);
   padding: 1em 0;
@@ -133,7 +133,7 @@ const selectSubsection = (subsection: string, section: string) => {
 }
 
 .section-title:hover {
-  background-color: #607c97;
+  background-color: #698399;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -162,11 +162,11 @@ const selectSubsection = (subsection: string, section: string) => {
 
 /* Estilos para el cuadro negro */
 .content {
-  background-color: #515896; /* Color del fondo */
+  background-color: #727699; /* Color del fondo */
   color: rgb(17, 17, 17); /* Color del texto */
   padding: 0; /* Eliminamos el padding para que abarque todo */
   width: calc(100vw - 250px); /* Ocupar todo el ancho menos la barra lateral */
-  height: 110vh; /* Ocupar toda la altura de la ventana */
+  height: 109vh; /* Ocupar toda la altura de la ventana */
   position: absolute; /* Asegurar que se posicione correctamente */
   top: 0;
   left: 250px; /* Comienza donde termina la barra lateral */
@@ -186,7 +186,7 @@ const selectSubsection = (subsection: string, section: string) => {
 .subsection-content {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centra horizontalmente */
+  align-items: left; /* Centra horizontalmente */
   justify-content: flex-start; /* Alinea el contenido en la parte superior */
   height: 80%; /* Abarca toda la altura disponible */
   padding-top: 20px; /* Ajusta la separación desde la parte superior */

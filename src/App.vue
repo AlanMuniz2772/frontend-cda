@@ -1,13 +1,22 @@
+<!-- src/App.vue -->
 <template>
-  <div class="app-container">
-    <!-- Barra superior -->
-    <Header :sidebarOpen="sidebarOpen" :toggleSidebar="toggleSidebar" />
+  <div>
+    <!-- Mostrar Header y Sidebar solo si está autenticado -->
+    <div v-if="store.isAuthenticated" class="app-container">
+      <!-- Barra superior -->
+      <Header :sidebarOpen="sidebarOpen" :toggleSidebar="toggleSidebar" />
 
-    <!-- Menú Lateral -->
-    <Sidebar v-if="sidebarOpen" />
+      <!-- Menú Lateral -->
+      <Sidebar v-if="sidebarOpen" />
 
-    <!-- Contenido Principal -->
-    <div :class="['main-content', { 'sidebar-open': sidebarOpen }]">
+      <!-- Contenido Principal -->
+      <div :class="['main-content', { 'sidebar-open': sidebarOpen }]">
+        <router-view />
+      </div>
+    </div>
+
+    <!-- Mostrar solo la vista del enrutador si no está autenticado -->
+    <div v-else>
       <router-view />
     </div>
   </div>
@@ -15,8 +24,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import Header from './components/Header.vue'; // Importa el componente Header
-import Sidebar from './components/Sidebar.vue'; // Asegúrate de tener el sidebar también
+import Header from './components/Header.vue';
+import Sidebar from './components/Sidebar.vue';
+import store from './store'; // Importa la tienda
 
 // Estado para controlar la apertura/cierre del sidebar
 const sidebarOpen = ref(true);
@@ -33,26 +43,26 @@ const toggleSidebar = () => {
   height: 100vh;
 }
 
-/* Estilos para el sidebar y el contenido principal se mantienen igual */
+/* Estilos para el sidebar y el contenido principal */
 .sidebar {
-  width: 250px; /* Ancho del sidebar */
-  background-color: #2c3e50;
+  width: 250px;
+  background-color: #394e75;
   color: white;
-  height: calc(100vh - 50px); /* Altura ajustada para no sobrepasar la barra superior */
+  height: calc(100vh - 50px);
   padding: 1em 0;
   position: fixed;
-  top: 50px; /* Coloca el menú lateral debajo de la barra superior */
+  top: 50px;
   left: 0;
-  z-index: 999; /* Aseguramos que el sidebar esté visible */
-  overflow-y: auto; /* Habilita el scroll si es necesario */
+  z-index: 999;
+  overflow-y: auto;
 }
 
 .main-content {
-  margin-left: 250px; /* Espacio para el menú lateral */
-  padding: 70px 20px 20px; /* Ajuste para la barra superior */
+  margin-left: 250px;
+  padding: 70px 20px 20px;
   flex: 1;
   overflow-y: auto;
-  transition: margin-left 0.3s ease; /* Animación suave para el contenido */
+  transition: margin-left 0.3s ease;
 }
 
 .sidebar-open + .main-content {
