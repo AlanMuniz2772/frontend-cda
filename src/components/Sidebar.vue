@@ -1,22 +1,38 @@
 <template>
   <div class="sidebar">
-    <!-- Iteramos sobre las secciones principales -->
+    <!-- Menú lateral -->
     <ul class="menu">
       <li v-for="(section, index) in sections" :key="index" class="menu-item">
         <div class="section-title" @click="toggleSection(index)">
           {{ section.title }}
         </div>
-        <!-- Añadimos la transición -->
         <transition name="slide">
           <!-- Submenú desplegable -->
-          <ul v-show="activeSection === index" class="submenu">
-            <li v-for="(subsection, subIndex) in section.subsections" :key="subIndex" class="submenu-item">
+          <ul v-show="activeSections.includes(index)" class="submenu">
+            <li v-for="(subsection, subIndex) in section.subsections" 
+                :key="subIndex" 
+                class="submenu-item"
+                @click="selectSubsection(subsection, section.title)">
               {{ subsection }}
             </li>
           </ul>
         </transition>
       </li>
     </ul>
+  </div>
+
+  <!-- Cuadro negro para mostrar el título seleccionado -->
+  <div class="content">
+    <!-- Título de la sección (centrado arriba) -->
+    <div class="section-title-content" v-if="selectedSection">
+      <h2>{{ selectedSection }}</h2>
+    </div>
+
+    <!-- Título de la subsección (centrado) -->
+    <div class="subsection-content">
+      <h1 v-if="selectedSubsection">{{ selectedSubsection }}</h1>
+      <p v-else>Selecciona una subsección</p>
+    </div>
   </div>
 </template>
 
@@ -51,16 +67,27 @@ const sections = ref([
   },
 ]);
 
-// Estado para manejar la sección activa
-const activeSection = ref<number | null>(null);
+// Estado para manejar las secciones activas
+const activeSections = ref<number[]>([]);
+
+// Estado para manejar la subsección seleccionada y su sección
+const selectedSubsection = ref<string | null>(null);
+const selectedSection = ref<string | null>(null);
 
 // Función para alternar la visibilidad de las subsecciones
 const toggleSection = (index: number) => {
-  if (activeSection.value === index) {
-    activeSection.value = null; // Si se vuelve a hacer clic en la sección activa, se colapsa
+  const sectionIndex = activeSections.value.indexOf(index);
+  if (sectionIndex !== -1) {
+    activeSections.value.splice(sectionIndex, 1);
   } else {
-    activeSection.value = index; // Cambiamos a la sección activa seleccionada
+    activeSections.value.push(index);
   }
+};
+
+// Función para seleccionar una subsección y su sección
+const selectSubsection = (subsection: string, section: string) => {
+  selectedSubsection.value = subsection;
+  selectedSection.value = section;
 };
 </script>
 
@@ -70,13 +97,13 @@ const toggleSection = (index: number) => {
   width: 250px;
   background-color: #2c3e50;
   color: white;
-  height: calc(100vh - 50px); /* Restamos la altura del header */
+  height: calc(100vh - 50px);
   padding: 1em 0;
   position: fixed;
-  top: 50px; /* Para alinearlo debajo del header */
+  top: 50px;
   left: 0;
   overflow-y: auto;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3); /* Sombra para dar profundidad */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
   z-index: 1000;
 }
 
@@ -99,15 +126,15 @@ const toggleSection = (index: number) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave para el botón */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: white;
   font-size: 1rem;
   font-weight: 500;
 }
 
 .section-title:hover {
-  background-color: #3b5369;
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Sombra más fuerte al hacer hover */
+  background-color: #607c97;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
 }
 
 .submenu {
@@ -129,22 +156,55 @@ const toggleSection = (index: number) => {
 
 .submenu-item:hover {
   background-color: #34495e;
-  padding-left: 2em; /* Efecto de desplazamiento hacia la derecha al hacer hover */
+  padding-left: 2em;
   border-radius: 4px;
 }
 
-/* Animación de desplegar */
-.slide-enter-active, .slide-leave-active {
-  transition: max-height 0.3s ease, opacity 0.3s ease;
+/* Estilos para el cuadro negro */
+.content {
+  background-color: #515896; /* Color del fondo */
+  color: rgb(17, 17, 17); /* Color del texto */
+  padding: 0; /* Eliminamos el padding para que abarque todo */
+  width: calc(100vw - 250px); /* Ocupar todo el ancho menos la barra lateral */
+  height: 110vh; /* Ocupar toda la altura de la ventana */
+  position: absolute; /* Asegurar que se posicione correctamente */
+  top: 0;
+  left: 250px; /* Comienza donde termina la barra lateral */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.slide-enter-from, .slide-leave-to {
-  max-height: 0;
-  opacity: 0;
+.section-title-content {
+  position: absolute;
+  top: 10px;
+  left: 10px; /* Alinea el título de la categoría a la izquierda */
+  text-align: left;
+  width: auto;
 }
 
-.slide-enter-to, .slide-leave-from {
-  max-height: 500px; /* Ajusta esto según la altura máxima estimada */
-  opacity: 1;
+.subsection-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra horizontalmente */
+  justify-content: flex-start; /* Alinea el contenido en la parte superior */
+  height: 80%; /* Abarca toda la altura disponible */
+  padding-top: 20px; /* Ajusta la separación desde la parte superior */
+  width: 100%; /* Ocupar todo el ancho disponible */
 }
+
+h1, h2 {
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  font-size: 1.5rem;
+  text-align: center; /* Asegura que el título de la subcategoría esté centrado */
+}
+
+h1 {
+  font-size: 2rem;
+}
+
 </style>
