@@ -9,10 +9,12 @@
         <transition name="slide">
           <!-- Submenú desplegable -->
           <ul v-show="activeSections.includes(index)" class="submenu">
-            <li v-for="(subsection, subIndex) in section.subsections" 
-                :key="subIndex" 
-                class="submenu-item"
-                @click="selectSubsection(subsection, section.title)">
+            <li
+              v-for="(subsection, subIndex) in section.subsections"
+              :key="subIndex"
+              class="submenu-item"
+              @click="selectSubsection(subsection, section.title)"
+            >
               {{ subsection }}
             </li>
           </ul>
@@ -23,47 +25,65 @@
 
   <!-- Cuadro negro para mostrar el título seleccionado -->
   <div class="content">
-    <!-- Título de la sección (centrado arriba) -->
-    <div class="section-title-content" v-if="selectedSection">
-      <h2>{{ selectedSection }}</h2>
-    </div>
-
-    <!-- Título de la subsección (centrado) -->
-    <div class="subsection-content">
-      <h1 v-if="selectedSubsection">{{ selectedSubsection }}</h1>
-      <p v-else>Selecciona una subsección</p>
-    </div>
+    <!-- Mostrar el componente Reportes si se seleccionó la subsección de reportes -->
+    <Reportes v-if="selectedSubsection === 'Reportes'" />
+    <!-- Mostrar el componente VentasPorMes si se seleccionó la subsección de ventas por mes -->
+    <VentasPorMes v-if="selectedSubsection === 'Venta de mes'" />
+    <!-- Mostrar el componente VentasPorDia si se seleccionó la subsección de ventas por día -->
+    <VentasPorDia v-if="selectedSubsection === 'Venta por dia'" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import Reportes from './Reportes.vue'; // Importar el componente Reportes
+import VentasPorMes from './VentasPorMes.vue'; // Importar el componente VentasPorMes
+import VentasPorDia from './VentasPorDia.vue'; // Importar el componente VentasPorDia
 
 // Secciones del menú y sus subsecciones
 const sections = ref([
   {
     title: 'Reportes',
-    subsections: ['Reportes', 'Venta de mes', 'Venta por dia', 'Ventas por producto', 'Reporte de asistencia', 'Consumos','Historial Ordenes']
+    subsections: [
+      'Reportes',
+      'Venta de mes',
+      'Venta por dia',
+      'Ventas por producto',
+      'Reporte de asistencia',
+      'Consumos',
+      'Historial Ordenes',
+    ],
   },
   {
     title: 'Produccion',
-    subsections: ['Productos', 'Almacenes']
+    subsections: ['Productos', 'Almacenes'],
   },
   {
     title: 'Ordenes',
-    subsections: ['Ordenes de compra']
+    subsections: ['Ordenes de compra'],
   },
   {
     title: 'Inventarios',
-    subsections: ['Inventarios', 'Inventarios programados', 'Ajustes de inventario']
+    subsections: [
+      'Inventarios',
+      'Inventarios programados',
+      'Ajustes de inventario',
+    ],
   },
   {
     title: 'Configuracion',
-    subsections: ['Usuarios', 'Sucursales', 'Tipos de pagos', 'Tipos de servicios', 'Configuracion impresoras', 'Monedas Extranjeras']
+    subsections: [
+      'Usuarios',
+      'Sucursales',
+      'Tipos de pagos',
+      'Tipos de servicios',
+      'Configuracion impresoras',
+      'Monedas Extranjeras',
+    ],
   },
   {
     title: 'Soporte',
-    subsections: ['Soporte']
+    subsections: ['Soporte'],
   },
 ]);
 
@@ -90,6 +110,7 @@ const selectSubsection = (subsection: string, section: string) => {
   selectedSection.value = section;
 };
 </script>
+
 
 <style scoped>
 /* Estilos del sidebar */
