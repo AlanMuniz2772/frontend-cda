@@ -20,19 +20,35 @@
   const password = ref('');
   const router = useRouter();
   
-  // Credenciales predefinidas
-  const validUsername = 'admin';
-  const validPassword = '12345';
+  
   
   // Función de manejo de login
   const handleLogin = () => {
-    if (username.value === validUsername && password.value === validPassword) {
-      // Si las credenciales son correctas, simula autenticación
-      login(); // Actualiza el estado de autenticación en la tienda
-      router.push('/'); // Redirige a la página principal
-    } else {
-      alert('Credenciales incorrectas. Inténtalo de nuevo.');
-    }
+    const loginUrl = `http://localhost:8000/api/login1?name=${username.value}&password=${password.value}`;
+    fetch(loginUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      
+    })
+    .then(response => response.json())
+    .then(json => {
+      
+      if (json.message === 'Login successful') {
+        login(); // Actualiza el estado de autenticación en la tienda
+        router.push('/'); // Redirige a la página principal
+      } else {
+        alert('Credenciales incorrectas. Inténtalo de nuevo.');
+      }
+    })
+    // if (username.value === validUsername && password.value === validPassword) {
+    //   // Si las credenciales son correctas, simula autenticación
+    //   login(); // Actualiza el estado de autenticación en la tienda
+    //   router.push('/'); // Redirige a la página principal
+    // } else {
+    //   alert('Credenciales incorrectas. Inténtalo de nuevo.');
+    // }
   };
   </script>
   
