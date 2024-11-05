@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
+//import { defineProps } from 'vue';
 import { useRouter } from 'vue-router';
 import { logout } from '../store'; // Importa la función logout
 

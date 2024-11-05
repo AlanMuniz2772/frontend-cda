@@ -2,6 +2,8 @@
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { login } from './store'; // Importa la función login de la tienda
+import datos from './tablas.json';
+import { ref } from 'vue';
 
 interface User {
   id: number;
@@ -33,3 +35,15 @@ export async function handleLogin(username: string, password: string) {
     console.error('Error al cargar las credenciales:', error);
   }
 }
+
+//Componente Reportes
+export const ventasPorDia = ref(datos.reportesVentas.ventasPorDia);
+export const productoMasVendido = ref(datos.reportesVentas.productoMasVendido);
+
+export const formatoMoneda = (valor: number): string => {
+  return `$${valor.toFixed(2)}`;
+};
+//Componentes Produccion
+export const productos = ref(datos.produccion.productos);
+export const totalPaginas = ref(datos.produccion.totalPaginas);
+
