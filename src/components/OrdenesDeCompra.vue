@@ -1,72 +1,92 @@
 <template>
-    <div class="ordenes-de-compra">
-      <!-- Título -->
-      <h2>Órdenes de Compra</h2>
-  
-      <!-- Barra de búsqueda -->
-      <div class="search-bar">
-        <!-- Campo para buscar orden -->
-        <div class="search-field">
-          <label for="order-search">Buscar Orden</label>
-          <input id="order-search" type="text" placeholder="Escriba # Orden" v-model="searchOrder" />
-        </div>
-  
-        <!-- Campo para buscar por rango de fechas -->
-        <div class="search-field">
-          <label for="date-range">Buscar Fecha Orden</label>
-          <input id="date-range" type="text" placeholder="Rango de Fechas" v-model="searchDateRange" />
-        </div>
-  
-        <!-- Selector de sucursal -->
-        <div class="search-field">
-          <label for="branch-select">Sucursal</label>
-          <select id="branch-select" v-model="selectedBranch">
-            <option value="" disabled selected>Seleccione Sucursal</option>
-            <option v-for="branch in branches" :key="branch.id" :value="branch.name">{{ branch.name }}</option>
-          </select>
-        </div>
-  
-        <!-- Botón de búsqueda -->
-        <button class="search-button" @click="searchOrders">Buscar</button>
+  <div class="ordenes-de-compra">
+    <!-- Título -->
+    <h2>Órdenes de Compra</h2>
+
+    <!-- Barra de búsqueda -->
+    <div class="search-bar">
+      <!-- Campo para buscar orden -->
+      <div class="search-field">
+        <label for="order-search">Buscar Orden</label>
+        <input id="order-search" type="text" placeholder="Escriba # Orden" v-model="searchOrder" />
       </div>
-  
-      <!-- Mensaje de no hay pedidos -->
-      <div class="no-orders" v-if="orders.length === 0">
-        Aun no hay pedidos registrados.
+
+      <!-- Campo para buscar por rango de fechas -->
+      <div class="search-field">
+        <label for="date-range">Buscar Fecha Orden</label>
+        <input id="date-range" type="text" placeholder="Rango de Fechas" v-model="searchDateRange" />
       </div>
-  
-      <!-- Tabla de órdenes (opcional, si hubiera pedidos) -->
-      <div v-else>
-        <!-- Tabla de órdenes (puedes agregarla aquí si quieres mostrar las órdenes) -->
+
+      <!-- Selector de sucursal -->
+      <div class="search-field">
+        <label for="branch-select">Sucursal</label>
+        <select id="branch-select" v-model="selectedBranch">
+          <option value="" disabled selected>Seleccione Sucursal</option>
+          <option v-for="branch in branches" :key="branch.id" :value="branch.name">{{ branch.name }}</option>
+        </select>
       </div>
+
+      <!-- Botón de búsqueda -->
+      <button class="search-button" @click="searchOrders">Buscar</button>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref } from 'vue';
-  
-  // Campos de búsqueda
-  const searchOrder = ref('');
-  const searchDateRange = ref('');
-  const selectedBranch = ref('');
-  
-  // Lista de sucursales
-  const branches = ref([
-    { id: 1, name: 'Saltillo 1 - Plaza Cocoa' },
-    { id: 2, name: 'Saltillo 3 - Pedro Figueroa' },
-    // Agrega más sucursales si es necesario
-  ]);
-  
-  // Lista de órdenes (vacía inicialmente)
-  const orders = ref([]);
-  
-  // Función para buscar órdenes
-  const searchOrders = () => {
-    // Implementa la lógica de búsqueda aquí
-    console.log('Buscar órdenes con:', searchOrder.value, searchDateRange.value, selectedBranch.value);
-  };
-  </script>
-  
+
+    <!-- Mensaje de no hay pedidos -->
+    <div class="no-orders" v-if="filteredOrders.length === 0">
+      Aun no hay pedidos registrados.
+    </div>
+
+    <!-- Tabla de órdenes -->
+    <div v-else>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Número de Ventas</th>
+            <th>Total Vendido</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="order in filteredOrders" :key="order.fecha">
+            <td>{{ order.fecha }}</td>
+            <td>{{ order.numeroVentas }}</td>
+            <td>{{ formatoMoneda(order.totalVendido) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { ventasPorDia, formatoMoneda } from '../api'; // Importa datos y función de formato desde api.ts
+
+// Campos de búsqueda
+const searchOrder = ref('');
+const searchDateRange = ref('');
+const selectedBranch = ref('');
+
+// Lista de sucursales (simulada)
+const branches = ref([
+  { id: 1, name: 'Saltillo 1 - Plaza Cocoa' },
+  { id: 2, name: 'Saltillo 3 - Pedro Figueroa' },
+]);
+
+// Filtrar las órdenes en función de los criterios de búsqueda
+const filteredOrders = computed(() => {
+  return ventasPorDia.value.filter(order => {
+    const matchesOrderNumber = searchOrder.value === '' || order.numeroVentas.toString().includes(searchOrder.value);
+    const matchesDate = searchDateRange.value === '' || order.fecha.includes(searchDateRange.value);
+    return matchesOrderNumber && matchesDate;
+  });
+});
+
+// Función de búsqueda (opcional)
+const searchOrders = () => {
+  console.log('Buscar órdenes con:', searchOrder.value, searchDateRange.value, selectedBranch.value);
+};
+</script>
+
   <style scoped>
   .ordenes-de-compra {
     padding: 20px;

@@ -1,27 +1,36 @@
 {
     "users": [
-      {
-        "id": 1,
-        "name": "John Doe",
-        "email": "john.doe@example.com",
-        "age": 28,
-        "password": "password123"
-      },
-      {
-        "id": 2,
-        "name": "c",
-        "email": "jane.smith@example.com",
-        "age": 34,
-        "password": "mypassword"
-      },
-      {
-        "id": 3,
-        "name": "Alice Johnson",
-        "email": "alice.johnson@example.com",
-        "age": 23,
-        "password": "alicepass"
-      }
-    ],
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "age": 28,
+      "password": "password123",
+      "tipo": "Cajero",
+      "sucursal": "Saltillo 1",
+      "activo": true
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "email": "jane.smith@example.com",
+      "age": 34,
+      "password": "mypassword",
+      "tipo": "Administrador",
+      "sucursal": "Saltillo 3",
+      "activo": false
+    },
+    {
+      "id": 3,
+      "name": "Alice Johnson",
+      "email": "alice.johnson@example.com",
+      "age": 23,
+      "password": "alicepass",
+      "tipo": "Vendedor",
+      "sucursal": "Saltillo 1",
+      "activo": true
+    }
+  ],
     "products": [
       {
         "id": 1,
