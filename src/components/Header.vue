@@ -1,7 +1,6 @@
 <!-- src/components/Header.vue -->
 <template>
   <header class="header">
-    <button @click="toggleSidebar">Ocultar Menu</button>
     <h1>Mi Punto de venta</h1>
     <button @click="handleLogout">Cerrar sesión</button>
   </header>
@@ -11,11 +10,6 @@
 import { defineProps } from 'vue';
 import { useRouter } from 'vue-router';
 import { logout } from '../store'; // Importa la función logout
-
-const props = defineProps<{
-  sidebarOpen: boolean;
-  toggleSidebar: () => void;
-}>();
 
 const router = useRouter();
 
