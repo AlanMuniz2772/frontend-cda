@@ -2,7 +2,7 @@
 <template>
     <div class="login-container">
       <h2>Login</h2>
-      <form @submit.prevent="handleLogin">
+      <form @submit.prevent="submitLogin">
         <input type="text" v-model="username" placeholder="Username" required />
         <input type="password" v-model="password" placeholder="Password" required />
         <button type="submit">Login</button>
@@ -12,28 +12,16 @@
   
   <script setup lang="ts">
   import { ref } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { login } from '../store'; // Importa la función login
+  import { handleLogin } from '../api';
   
-  // Estado para el username y el password
   const username = ref('');
   const password = ref('');
-  const router = useRouter();
   
-  // Credenciales predefinidas
-  const validUsername = 'admin';
-  const validPassword = '12345';
+
+  function submitLogin() {
+    handleLogin(username.value, password.value);
+  }
   
-  // Función de manejo de login
-  const handleLogin = () => {
-    if (username.value === validUsername && password.value === validPassword) {
-      // Si las credenciales son correctas, simula autenticación
-      login(); // Actualiza el estado de autenticación en la tienda
-      router.push('/'); // Redirige a la página principal
-    } else {
-      alert('Credenciales incorrectas. Inténtalo de nuevo.');
-    }
-  };
   </script>
   
   <style scoped>
