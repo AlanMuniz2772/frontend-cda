@@ -131,7 +131,7 @@
   .inventory-table th,
   .inventory-table td {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #020202;
     text-align: center;
   }
   

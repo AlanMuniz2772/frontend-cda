@@ -33,8 +33,8 @@ const handleLogout = () => {
   left: 0;
   width: 100%;
   height: 50px;
-  background-color: #1f364e;
-  color: white;
+  background-color: white; /* Cambiado a blanco */
+  color: black; /* Cambiado a negro */
   display: flex;
   align-items: center;
   padding: 0 20px;

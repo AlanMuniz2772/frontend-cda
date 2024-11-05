@@ -59,7 +59,7 @@
   
   .product-table th, .product-table td {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #0c0c0c;
     text-align: left;
   }
   

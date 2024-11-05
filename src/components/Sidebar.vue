@@ -74,8 +74,8 @@ const selectSubsection = (subsection: string, section: string) => {
 /* Estilos del sidebar */
 .sidebar {
   width: 250px;
-  background-color: #273b4e;
-  color: white;
+  background-color: white; /* Cambiado a blanco */
+  color: black; /* Cambiado a negro */
   height: calc(100vh - 50px);
   padding: 1em 0;
   position: fixed;
@@ -99,20 +99,20 @@ const selectSubsection = (subsection: string, section: string) => {
 .section-title {
   cursor: pointer;
   padding: 0.75em 1em;
-  background-color: #34495e;
+  background-color: #f2f2f2; /* Cambiado a un tono claro */
   border-radius: 8px;
   transition: background-color 0.3s, box-shadow 0.3s;
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  color: white;
+  color: black; /* Cambiado a negro */
   font-size: 1rem;
   font-weight: 500;
 }
 
 .section-title:hover {
-  background-color: #698399;
+  background-color: #d9d9d9; /* Tono gris claro para hover */
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -120,7 +120,7 @@ const selectSubsection = (subsection: string, section: string) => {
   list-style-type: none;
   padding: 0.75em;
   margin-top: 0.75em;
-  background-color: #1a252f;
+  background-color: #e6e6e6; /* Fondo claro */
   border-radius: 6px;
   overflow: hidden;
 }
@@ -131,11 +131,11 @@ const selectSubsection = (subsection: string, section: string) => {
   cursor: pointer;
   transition: background-color 0.3s, padding-left 0.3s;
   font-size: 0.9rem;
-  color: #ecf0f1;
+  color: black; /* Cambiado a negro */
 }
 
 .submenu-item:hover {
-  background-color: #34495e;
+  background-color: #cccccc; /* Fondo claro para hover */
   padding-left: 2em;
   border-radius: 4px;
 }
@@ -159,8 +159,8 @@ const selectSubsection = (subsection: string, section: string) => {
 
 /* Estilos para el contenido */
 .content {
-  background-color: #727699;
-  color: rgb(17, 17, 17);
+  background-color: #e0e0e0; /* Fondo claro para contenido */
+  color: black; /* Cambiado a negro */
   padding: 0;
   width: calc(100vw - 250px);
   height: 109vh;
@@ -193,6 +193,7 @@ const selectSubsection = (subsection: string, section: string) => {
 h1, h2 {
   margin: 0;
   padding: 0;
+  color: black; /* Cambiado a negro */
 }
 
 h2 {
