@@ -145,5 +145,42 @@ const searchOrders = () => {
     text-align: center;
     margin-top: 20px;
   }
+
+  table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+thead {
+  background-color: #4CAF50; /* Color de encabezado */
+  color: white;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+  background-color: #f1f1f1; /* Efecto de hover en filas */
+}
+
+td {
+  color: #333;
+}
+
+.no-orders {
+  font-size: 18px;
+  color: #000000;
+  text-align: center;
+  margin-top: 20px;
+  background-color: #f8d7da; /* Fondo para mensaje de no pedidos */
+  padding: 15px;
+  border-radius: 5px;
+}
+
+
   </style>
   
