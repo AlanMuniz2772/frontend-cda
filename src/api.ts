@@ -1,9 +1,14 @@
 // src/auth.ts
-import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { login } from './store'; // Importa la función login de la tienda
 import datos from './tablas.json';
 import { ref } from 'vue';
+
+import axios from 'axios';
+
+axios.defaults.withCredentials = true;
+axios.defaults.withXSRFToken = true;
+
 
 // Interfaz para definir el tipo de datos de un usuario
 interface User {
@@ -14,40 +19,39 @@ interface User {
   password: string;
 }
 
+const headers: Record<string, string> = { 'Content-Type': 'application/json;charset=UTF-8' };
+
 // Variable reactiva para almacenar los usuarios
 export const usuarios = ref<User[]>([]);
 
-// Función para cargar usuarios desde el archivo datos.json
-export async function cargarUsuarios() {
-  try {
-    const response = await axios.get<{ users: User[] }>('/src/datos.json'); // Ajusta la ruta si es necesario
-    usuarios.value = response.data.users;
-  } catch (error) {
-    console.error('Error al cargar usuarios:', error);
-  }
-}
-
-// Función para manejar el inicio de sesión
-export async function handleLogin(username: string, password: string) {
+// Función para manejar el inicio de sesión con solicitud al backend
+export async function handleLogin(email: string, password: string) {
   const router = useRouter();
 
-  // Carga los usuarios antes de validar el inicio de sesión
-  await cargarUsuarios(); 
-
   try {
-    // Busca si el usuario existe y la contraseña es correcta
-    const validUser = usuarios.value.find(
-      (user) => user.name === username && user.password === password
-    );
+    // Obtén el token CSRF del backend
+    
+    await axios.get("http://localhost:8000/sanctum/csrf-cookie", {
+      headers: Object.keys(headers).length > 0 ? headers : undefined,
+      timeout: 30000,
+      withCredentials: true,
+      withXSRFToken: true,
+   });
 
-    if (validUser) {
-      login(); // Autentica en tu tienda
+    
+    // Usa la ruta completa del backend
+    const response = await axios.post('http://localhost:8000/login', { email, password });
+    console.log(response);
+    if (response.status === 204 || response.status === 200) {
+      login(); // Marca como autenticado en la tienda
       router.push('/'); // Redirige a la página principal
     } else {
       alert('Credenciales incorrectas. Inténtalo de nuevo.');
     }
   } catch (error) {
+    console.log(error);
     console.error('Error al procesar el inicio de sesión:', error);
+    alert('Hubo un problema al intentar iniciar sesión. Por favor, intenta más tarde.');
   }
 }
 
@@ -63,5 +67,4 @@ export const formatoMoneda = (valor: number): string => {
 export const productos = ref(datos.produccion.productos);
 export const totalPaginas = ref(datos.produccion.totalPaginas);
 
-// Cargar usuarios al importar el módulo
-cargarUsuarios();
+
