@@ -1,72 +1,78 @@
 <template>
-    <div class="reportes-container">
-      <h2>Reportes</h2>
-      
-      <!-- Tabla de Ventas por Día -->
-      <div class="table-container">
-        <h3>Ventas por Día</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Número de Ventas</th>
-              <th>Total Vendido</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="venta in ventasPorDia" :key="venta.fecha">
-              <td>{{ venta.fecha }}</td>
-              <td>{{ venta.numeroVentas }}</td>
-              <td>{{ venta.totalVendido | formatoMoneda }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-  
-      <!-- Tabla de Producto Más Vendido -->
-      <div class="table-container">
-        <h3>Producto Más Vendido</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Cantidad Vendida</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="producto in productoMasVendido" :key="producto.nombre">
-              <td>{{ producto.nombre }}</td>
-              <td>{{ producto.cantidadVendida }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+  <div class="reportes-container">
+    <h2>Reportes</h2>
+    
+    <!-- Tabla de Ventas por Día -->
+    <div class="table-container">
+      <h3>Ventas por Día</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Número de Ventas</th>
+            <th>Total Vendido</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="venta in ventasPorDia" :key="venta.fecha">
+            <td>{{ venta.fecha }}</td>
+            <td>{{ venta.numeroVentas }}</td>
+            <td>{{ venta.totalVendido }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue';
-  
-  // Datos de ejemplo (dummy data) para Ventas por Día
-  const ventasPorDia = ref([
-    { fecha: '2024-10-15', numeroVentas: 10, totalVendido: 1500 },
-    { fecha: '2024-10-16', numeroVentas: 20, totalVendido: 3000 },
-    { fecha: '2024-10-17', numeroVentas: 15, totalVendido: 2500 },
-  ]);
-  
-  // Datos de ejemplo para Producto Más Vendido
-  const productoMasVendido = ref([
-    { nombre: 'Producto A', cantidadVendida: 50 },
-    { nombre: 'Producto B', cantidadVendida: 40 },
-    { nombre: 'Producto C', cantidadVendida: 35 },
-  ]);
-  
-  // Formatear el total vendido como moneda
-  const formatoMoneda = (valor) => {
-    return `$${valor.toFixed(2)}`;
-  };
-  </script>
-  
+
+    <!-- Tabla de Producto Más Vendido -->
+    <div class="table-container">
+      <h3>Producto Más Vendido</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad Vendida</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="producto in productosMasVendidos" :key="producto.nombre">
+            <td>{{ producto.nombre }}</td>
+            <td>{{ producto.cantidadVendida }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { fetchVentasPorDia, fetchProductosMasVendidos } from '../api';
+
+
+    // Variables reactivas para almacenar los datos de ventas por día y productos más vendidos
+    const ventasPorDia = ref<Array<{ fecha: string; numeroVentas: number; totalVendido: number }>>([]);
+    const productosMasVendidos = ref<Array<{ nombre: string; cantidadVendida: number }>>([]);
+
+    // Función para obtener los datos de ventas por día
+    const obtenerVentasPorDia = async () => {
+      ventasPorDia.value = await fetchVentasPorDia();
+    };
+
+    // Función para obtener los productos más vendidos
+    const obtenerProductosMasVendidos = async () => {
+      productosMasVendidos.value = await fetchProductosMasVendidos();
+    };
+
+    // Llamamos a ambas funciones cuando el componente se monta
+    onMounted(() => {
+      obtenerVentasPorDia();
+      obtenerProductosMasVendidos();
+    });
+
+    
+</script>
+
+
   <style scoped>
   .reportes-container {
     padding: 20px;

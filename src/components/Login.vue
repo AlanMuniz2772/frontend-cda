@@ -2,8 +2,8 @@
 <template>
     <div class="login-container">
       <h2>Login</h2>
-      <form @submit.prevent="handleLogin">
-        <input type="text" v-model="username" placeholder="Username" required />
+      <form @submit.prevent="submitLogin">
+        <input type="text" v-model="email" placeholder="Email" required />
         <input type="password" v-model="password" placeholder="Password" required />
         <button type="submit">Login</button>
       </form>
@@ -12,44 +12,16 @@
   
   <script setup lang="ts">
   import { ref } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { login } from '../store'; // Importa la función login
+  import { handleLogin } from '../api';
   
-  // Estado para el username y el password
-  const username = ref('');
+  const email = ref('');
   const password = ref('');
-  const router = useRouter();
   
+
+  function submitLogin() {
+    handleLogin(email.value, password.value);
+  }
   
-  
-  // Función de manejo de login
-  const handleLogin = () => {
-    const loginUrl = `http://localhost:8000/api/login1?name=${username.value}&password=${password.value}`;
-    fetch(loginUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      
-    })
-    .then(response => response.json())
-    .then(json => {
-      
-      if (json.message === 'Login successful') {
-        login(); // Actualiza el estado de autenticación en la tienda
-        router.push('/'); // Redirige a la página principal
-      } else {
-        alert('Credenciales incorrectas. Inténtalo de nuevo.');
-      }
-    })
-    // if (username.value === validUsername && password.value === validPassword) {
-    //   // Si las credenciales son correctas, simula autenticación
-    //   login(); // Actualiza el estado de autenticación en la tienda
-    //   router.push('/'); // Redirige a la página principal
-    // } else {
-    //   alert('Credenciales incorrectas. Inténtalo de nuevo.');
-    // }
-  };
   </script>
   
   <style scoped>

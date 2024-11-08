@@ -1,29 +1,17 @@
 <!-- src/components/Header.vue -->
 <template>
   <header class="header">
-    <button @click="toggleSidebar">Ocultar Menu</button>
     <h1>Mi Punto de venta</h1>
     <button @click="handleLogout">Cerrar sesión</button>
   </header>
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
-import { useRouter } from 'vue-router';
-import { logout } from '../store'; // Importa la función logout
+//import { defineProps } from 'vue';
+import { handleLogout } from '../api';
 
-const props = defineProps<{
-  sidebarOpen: boolean;
-  toggleSidebar: () => void;
-}>();
 
-const router = useRouter();
 
-// Función para cerrar sesión
-const handleLogout = () => {
-  logout(); // Actualiza el estado de autenticación en la tienda
-  router.push('/login');
-};
 </script>
 
 <style scoped>
@@ -33,8 +21,8 @@ const handleLogout = () => {
   left: 0;
   width: 100%;
   height: 50px;
-  background-color: #1f364e;
-  color: white;
+  background-color: white; /* Cambiado a blanco */
+  color: black; /* Cambiado a negro */
   display: flex;
   align-items: center;
   padding: 0 20px;
