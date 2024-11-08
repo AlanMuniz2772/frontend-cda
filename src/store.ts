@@ -7,12 +7,12 @@ const store = reactive({
 
 export function login() {
   store.isAuthenticated = true;
-  localStorage.setItem('authenticated', 'true');
+  sessionStorage.setItem('authenticated', 'true');
 }
 
 export function logout() {
   store.isAuthenticated = false;
-  localStorage.removeItem('authenticated');
+  sessionStorage.removeItem('authenticated');
 }
 
 export default store;

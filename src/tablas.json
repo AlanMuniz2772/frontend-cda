@@ -1,22 +1,6 @@
 {
-  "reportesVentas": {
-    "ventasPorDia": [
-      { "fecha": "2024-10-15", "numeroVentas": 10, "totalVendido": 1500 },
-      { "fecha": "2024-10-16", "numeroVentas": 20, "totalVendido": 3000 },
-      { "fecha": "2024-10-17", "numeroVentas": 15, "totalVendido": 2500 }
-    ],
-    "productoMasVendido": [
-      { "nombre": "Producto A", "cantidadVendida": 50 },
-      { "nombre": "Producto B", "cantidadVendida": 40 },
-      { "nombre": "Producto C", "cantidadVendida": 35 }
-    ]
-  },
   "produccion": {
-    "productos": [
-      { "nombre": "Producto A", "costo": "$ 340.00", "precio": "$ 120.00" },
-      { "nombre": "Producto B", "costo": "$ 150.00", "precio": "$ 180.00" },
-      { "nombre": "Producto C", "costo": "$ 200.00", "precio": "$ 220.00" }
-    ],
+    
     "totalPaginas": 10
   }
 

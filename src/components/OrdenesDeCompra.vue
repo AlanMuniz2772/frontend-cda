@@ -49,7 +49,7 @@
           <tr v-for="order in filteredOrders" :key="order.fecha">
             <td>{{ order.fecha }}</td>
             <td>{{ order.numeroVentas }}</td>
-            <td>{{ formatoMoneda(order.totalVendido) }}</td>
+            <td>{{order.totalVendido }}</td>
           </tr>
         </tbody>
       </table>
@@ -58,19 +58,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { ventasPorDia, formatoMoneda } from '../api'; // Importa datos y función de formato desde api.ts
+import { ref, computed, onMounted } from 'vue';
+import { fetchVentasPorDia } from '../api'; // Importa la función fetchVentasPorDia desde api.ts
 
-// Campos de búsqueda
+// Variables de búsqueda
 const searchOrder = ref('');
 const searchDateRange = ref('');
 const selectedBranch = ref('');
+
+// Variable reactiva para almacenar los datos de ventas por día
+const ventasPorDia = ref<Array<{ fecha: string; numeroVentas: number; totalVendido: number }>>([]);
 
 // Lista de sucursales (simulada)
 const branches = ref([
   { id: 1, name: 'Saltillo 1 - Plaza Cocoa' },
   { id: 2, name: 'Saltillo 3 - Pedro Figueroa' },
 ]);
+
+// Función para obtener datos de ventas
+const obtenerVentasPorDia = async () => {
+  ventasPorDia.value = await fetchVentasPorDia();
+};
 
 // Filtrar las órdenes en función de los criterios de búsqueda
 const filteredOrders = computed(() => {
@@ -85,7 +93,11 @@ const filteredOrders = computed(() => {
 const searchOrders = () => {
   console.log('Buscar órdenes con:', searchOrder.value, searchDateRange.value, selectedBranch.value);
 };
+
+// Llama a obtenerVentasPorDia cuando el componente se monta
+onMounted(obtenerVentasPorDia);
 </script>
+
 
   <style scoped>
   .ordenes-de-compra {

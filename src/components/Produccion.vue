@@ -29,8 +29,23 @@
 </template>
 
 <script setup lang="ts">
-import { productos, totalPaginas } from '../api';
+import { ref, onMounted } from 'vue';
+import { fetchProductos, totalPaginas } from '../api';
+
+// Variable reactiva para almacenar los productos
+const productos = ref<Array<{ nombre: string; costo: number; precio: number }>>([]);
+
+// Función para obtener los productos
+const obtenerProductos = async () => {
+  productos.value = await fetchProductos();
+};
+
+// Llamada a la función cuando el componente se monta
+onMounted(() => {
+  obtenerProductos();
+});
 </script>
+
   
   <style scoped>
   .produccion {

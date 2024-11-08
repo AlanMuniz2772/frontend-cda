@@ -1,5 +1,6 @@
+// src/api.ts
 import { useRouter } from 'vue-router';
-import { login } from './store';
+import { login, logout } from './store';
 import datos from './tablas.json';
 import { ref } from 'vue';
 import axios from 'axios';
@@ -24,42 +25,83 @@ export async function handleLogin(email: string, password: string) {
   const router = useRouter();
 
   try {
-    // Obtén el token CSRF del backend
     await axios.get(BASE_URL + "/sanctum/csrf-cookie", {
       headers,
       timeout: 30000,
     });
 
-    // Usa la ruta completa del backend para el inicio de sesión
     const response = await axios.post(BASE_URL + '/login', { email, password });
     
     if (response.status === 204 || response.status === 200) {
-      login(); 
+      login();
       router.push('/'); 
     } 
   } catch (error) {
     if (axios.isAxiosError(error)) {
-        // Aquí podemos usar error.response de manera segura
-        if (error.response?.status === 422) {
-            alert('Credenciales inválidas');
-        } else {
-            console.error('Error al procesar el inicio de sesión:', error);
-        }
+      if (error.response?.status === 422) {
+        alert('Credenciales inválidas');
+      } else {
+        console.error('Error al procesar el inicio de sesión:', error);
+      }
     } else {
-        // Manejo del caso si no es un error de Axios
-        console.error('Error inesperado:', error);
+      console.error('Error inesperado:', error);
     }
+  }
 }
+
+export async function handleLogout() {
+  const router = useRouter();
+
+  try {
+    const response = await axios.post(BASE_URL + '/logout', {}, { headers });
+
+    if (response.status === 204 || response.status === 200) {
+      logout();
+      router.push('/login');
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Error al intentar cerrar sesión:', error);
+    } else {
+      console.error('Error inesperado:', error);
+    }
+  }
 }
 
-// Componentes de Reportes (Datos extraídos de datos de ventas)
-export const ventasPorDia = ref(datos.reportesVentas.ventasPorDia);
-export const productoMasVendido = ref(datos.reportesVentas.productoMasVendido);
+// Función para obtener ventas por día
+export async function fetchVentasPorDia() {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/reportes/ventas-por-dia`);
+    console.log("Ventas por día:", response.data.ventasPorDia);
+    return response.data.ventasPorDia; // Devuelve la lista de ventas
+  } catch (error) {
+    console.error("Error al obtener ventas por día:", error);
+    return [];
+  }
+}
 
-export const formatoMoneda = (valor: number): string => {
-  return `$${valor.toFixed(2)}`;
-};
+//funcion para obtner productos mas vendidos
+export async function fetchProductosMasVendidos() {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/reportes/productos-mas-vendidos`);
+    console.log("Productos más vendidos:", response.data.productosMasVendidos);
+    return response.data.productosMasVendidos; // Devuelve la lista de productos
+  } catch (error) {
+    console.error("Error al obtener productos más vendidos:", error);
+    return [];
+  }
+}
 
-// Componentes de Producción (Datos extraídos de datos de producción)
-export const productos = ref(datos.produccion.productos);
+//funcion para obtener productos
+export async function fetchProductos() {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/data/productos`);
+    console.log("Productos:", response.data.productos);
+    return response.data.productos; // Devuelve la lista de productos
+  } catch (error) {
+    console.error("Error al obtener productos:", error);
+    return [];
+  }
+}
+
 export const totalPaginas = ref(datos.produccion.totalPaginas);

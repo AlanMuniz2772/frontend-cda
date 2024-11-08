@@ -8,16 +8,10 @@
 
 <script setup lang="ts">
 //import { defineProps } from 'vue';
-import { useRouter } from 'vue-router';
-import { logout } from '../store'; // Importa la función logout
+import { handleLogout } from '../api';
 
-const router = useRouter();
 
-// Función para cerrar sesión
-const handleLogout = () => {
-  logout(); // Actualiza el estado de autenticación en la tienda
-  router.push('/login');
-};
+
 </script>
 
 <style scoped>

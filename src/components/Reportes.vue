@@ -17,7 +17,7 @@
           <tr v-for="venta in ventasPorDia" :key="venta.fecha">
             <td>{{ venta.fecha }}</td>
             <td>{{ venta.numeroVentas }}</td>
-            <td>{{ formatoMoneda(venta.totalVendido) }}</td>
+            <td>{{ venta.totalVendido }}</td>
           </tr>
         </tbody>
       </table>
@@ -34,7 +34,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="producto in productoMasVendido" :key="producto.nombre">
+          <tr v-for="producto in productosMasVendidos" :key="producto.nombre">
             <td>{{ producto.nombre }}</td>
             <td>{{ producto.cantidadVendida }}</td>
           </tr>
@@ -45,9 +45,33 @@
 </template>
 
 <script setup lang="ts">
-import { ventasPorDia, productoMasVendido, formatoMoneda } from '../api';
+import { ref, onMounted } from 'vue';
+import { fetchVentasPorDia, fetchProductosMasVendidos } from '../api';
 
+
+    // Variables reactivas para almacenar los datos de ventas por día y productos más vendidos
+    const ventasPorDia = ref<Array<{ fecha: string; numeroVentas: number; totalVendido: number }>>([]);
+    const productosMasVendidos = ref<Array<{ nombre: string; cantidadVendida: number }>>([]);
+
+    // Función para obtener los datos de ventas por día
+    const obtenerVentasPorDia = async () => {
+      ventasPorDia.value = await fetchVentasPorDia();
+    };
+
+    // Función para obtener los productos más vendidos
+    const obtenerProductosMasVendidos = async () => {
+      productosMasVendidos.value = await fetchProductosMasVendidos();
+    };
+
+    // Llamamos a ambas funciones cuando el componente se monta
+    onMounted(() => {
+      obtenerVentasPorDia();
+      obtenerProductosMasVendidos();
+    });
+
+    
 </script>
+
 
   <style scoped>
   .reportes-container {
