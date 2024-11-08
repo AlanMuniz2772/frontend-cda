@@ -1,16 +1,13 @@
-// src/auth.ts
 import { useRouter } from 'vue-router';
-import { login } from './store'; // Importa la función login de la tienda
+import { login } from './store';
 import datos from './tablas.json';
 import { ref } from 'vue';
-
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
-axios.defaults.withXSRFToken = true;
 
+const BASE_URL = 'http://localhost:8000';
 
-// Interfaz para definir el tipo de datos de un usuario
 interface User {
   id: number;
   name: string;
@@ -21,38 +18,38 @@ interface User {
 
 const headers: Record<string, string> = { 'Content-Type': 'application/json;charset=UTF-8' };
 
-// Variable reactiva para almacenar los usuarios
 export const usuarios = ref<User[]>([]);
 
-// Función para manejar el inicio de sesión con solicitud al backend
 export async function handleLogin(email: string, password: string) {
   const router = useRouter();
 
   try {
     // Obtén el token CSRF del backend
-    
-    await axios.get("http://localhost:8000/sanctum/csrf-cookie", {
-      headers: Object.keys(headers).length > 0 ? headers : undefined,
+    await axios.get(BASE_URL + "/sanctum/csrf-cookie", {
+      headers,
       timeout: 30000,
-      withCredentials: true,
-      withXSRFToken: true,
-   });
+    });
 
+    // Usa la ruta completa del backend para el inicio de sesión
+    const response = await axios.post(BASE_URL + '/login', { email, password });
     
-    // Usa la ruta completa del backend
-    const response = await axios.post('http://localhost:8000/login', { email, password });
-    console.log(response);
     if (response.status === 204 || response.status === 200) {
-      login(); // Marca como autenticado en la tienda
-      router.push('/'); // Redirige a la página principal
-    } else {
-      alert('Credenciales incorrectas. Inténtalo de nuevo.');
-    }
+      login(); 
+      router.push('/'); 
+    } 
   } catch (error) {
-    console.log(error);
-    console.error('Error al procesar el inicio de sesión:', error);
-    alert('Hubo un problema al intentar iniciar sesión. Por favor, intenta más tarde.');
-  }
+    if (axios.isAxiosError(error)) {
+        // Aquí podemos usar error.response de manera segura
+        if (error.response?.status === 422) {
+            alert('Credenciales inválidas');
+        } else {
+            console.error('Error al procesar el inicio de sesión:', error);
+        }
+    } else {
+        // Manejo del caso si no es un error de Axios
+        console.error('Error inesperado:', error);
+    }
+}
 }
 
 // Componentes de Reportes (Datos extraídos de datos de ventas)
@@ -66,5 +63,3 @@ export const formatoMoneda = (valor: number): string => {
 // Componentes de Producción (Datos extraídos de datos de producción)
 export const productos = ref(datos.produccion.productos);
 export const totalPaginas = ref(datos.produccion.totalPaginas);
-
-
