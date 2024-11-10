@@ -49,6 +49,36 @@ export async function handleLogin(email: string, password: string) {
   }
 }
 
+export async function handleRegister(name: string, email: string, password: string, password_confirmation: string) {
+  const router = useRouter();
+
+  try {
+    await axios.get(BASE_URL + "/sanctum/csrf-cookie", {
+      headers,
+      timeout: 30000,
+    });
+
+    const response = await axios.post(BASE_URL + '/register', { name, email, password, password_confirmation});
+
+    if (response.status === 204 || response.status === 200) {
+      alert("Bienvenido "+name);
+      login();
+      router.push('/');
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 422) {
+        alert('Datos de registro inválidos');
+        console.log('Datos de registro inválidos:', error);
+      } else {
+        console.error('Error al procesar el registro:', error);
+      }
+    } else {
+      console.error('Error inesperado:', error);
+    }
+  }
+}
+
 export async function handleLogout() {
   const router = useRouter();
 

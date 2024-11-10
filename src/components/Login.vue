@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { handleLogin, handleSignUp } from '../api';
+import { handleLogin, handleRegister } from '../api';
 
 const isSignUp = ref(false);
 const name = ref('');
@@ -52,23 +52,18 @@ const email = ref('');
 const username = ref('');
 const password = ref('');
 const confirmPassword = ref('');
+const fullName = ref('');
 
 function submitForm() {
   if (isSignUp.value) {
-    if (password.value === confirmPassword.value && validateEmail(email.value)) {
-      handleSignUp(name.value, lastName.value, email.value, password.value);
-    } else {
-      alert("Passwords do not match or email is invalid.");
-    }
+    fullName.value = `${name.value} ${lastName.value}`;
+    handleRegister(fullName.value, email.value, password.value, confirmPassword.value);
   } else {
     handleLogin(username.value, password.value);
   }
 }
 
-function validateEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
+
 </script>
 
 <style scoped>
