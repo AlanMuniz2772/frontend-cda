@@ -3,13 +3,13 @@
   <div class="login-container">
     <div class="form-box">
       <div>
-        <button class="tab-button" @click="isSignUp = true">Sign Up</button>
-        <button class="tab-button" @click="isSignUp = false">Log In</button>
+        <button class="tab-button" :class="{ active: mode === 'signup' }" @click="setMode('signup')">Sign Up</button>
+        <button class="tab-button" :class="{ active: mode === 'login' }" @click="setMode('login')">Log In</button>
       </div>
-      <div class="header-text">{{ isSignUp ? "Sign Up for Free" : "Log In" }}</div>
+      <div class="header-text">{{ mode === 'signup' ? "Sign Up for Free" : "Log In" }}</div>
       <form @submit.prevent="submitForm">
         <!-- Campos de Sign Up -->
-        <div v-if="isSignUp">
+        <div v-if="mode === 'signup'">
           <input type="text" v-model="name" placeholder="First Name" required />
           <input type="text" v-model="lastName" placeholder="Last Name" required />
           <input type="email" v-model="email" placeholder="Email Address" required />
@@ -35,7 +35,7 @@
           <input type="password" v-model="password" placeholder="Password" required minlength="8" />
         </div>
 
-        <button type="submit" class="submit-button">{{ isSignUp ? "GET STARTED" : "LOGIN" }}</button>
+        <button type="submit" class="submit-button">{{ mode === 'signup' ? "GET STARTED" : "LOGIN" }}</button>
       </form>
     </div>
   </div>
@@ -45,7 +45,7 @@
 import { ref } from 'vue';
 import { handleLogin, handleRegister } from '../api';
 
-const isSignUp = ref(false);
+const mode = ref<'login' | 'signup'>('login'); // Nueva propiedad mode para alternar
 const name = ref('');
 const lastName = ref('');
 const email = ref('');
@@ -54,16 +54,18 @@ const password = ref('');
 const confirmPassword = ref('');
 const fullName = ref('');
 
+function setMode(selectedMode: 'login' | 'signup') {
+  mode.value = selectedMode;
+}
+
 function submitForm() {
-  if (isSignUp.value) {
+  if (mode.value === 'signup') {
     fullName.value = `${name.value} ${lastName.value}`;
     handleRegister(fullName.value, email.value, password.value, confirmPassword.value);
   } else {
     handleLogin(username.value, password.value);
   }
 }
-
-
 </script>
 
 <style scoped>
