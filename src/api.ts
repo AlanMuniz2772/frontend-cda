@@ -39,12 +39,44 @@ export async function handleLogin(email: string, password: string) {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 422) {
-        alert('Credenciales inválidas');
+        alert(error.response.data.message);
       } else {
+        alert("Error al procesar el inicio de sesión:");
         console.error('Error al procesar el inicio de sesión:', error);
       }
     } else {
       console.error('Error inesperado:', error);
+    }
+  }
+}
+
+export async function handleRegister(name: string, email: string, password: string, password_confirmation: string) {
+  const router = useRouter();
+
+  try {
+    await axios.get(BASE_URL + "/sanctum/csrf-cookie", {
+      headers,
+      timeout: 30000,
+    });
+
+    const response = await axios.post(BASE_URL + '/register', { name, email, password, password_confirmation});
+
+    if (response.status === 204 || response.status === 200) {
+      alert("Bienvenido "+name);
+      login();
+      router.push('/');
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 422) {
+        alert(error.response.data.message);
+        console.log('Datos de registro inválidos:', error);
+      } else {
+        alert("Error al procesar el registro:");
+        console.log('Error al procesar el registro:', error);
+      }
+    } else {
+      console.log('Error inesperado:', error);
     }
   }
 }
@@ -100,6 +132,18 @@ export async function fetchProductos() {
     return response.data.productos; // Devuelve la lista de productos
   } catch (error) {
     console.error("Error al obtener productos:", error);
+    return [];
+  }
+}
+
+//funcion para obtener ventas por mes
+export async function fetchVentasPorMes() {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/reportes/ventas-por-mes`);
+    console.log("Ventas por mes:", response.data.ventasMensuales);
+    return response.data.ventasMensuales; // Devuelve la lista de ventas
+  } catch (error) {
+    console.error("Error al obtener ventas por mes:", error);
     return [];
   }
 }
