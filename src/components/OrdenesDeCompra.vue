@@ -11,21 +11,6 @@
         <input id="order-search" type="text" placeholder="Escriba # Orden" v-model="searchOrder" />
       </div>
 
-      <!-- Campo para buscar por rango de fechas -->
-      <div class="search-field">
-        <label for="date-range">Buscar Fecha Orden</label>
-        <input id="date-range" type="text" placeholder="Rango de Fechas" v-model="searchDateRange" />
-      </div>
-
-      <!-- Selector de sucursal -->
-      <div class="search-field">
-        <label for="branch-select">Sucursal</label>
-        <select id="branch-select" v-model="selectedBranch">
-          <option value="" disabled selected>Seleccione Sucursal</option>
-          <option v-for="branch in branches" :key="branch.id" :value="branch.name">{{ branch.name }}</option>
-        </select>
-      </div>
-
       <!-- Botón de búsqueda -->
       <button class="search-button" @click="searchOrders">Buscar</button>
     </div>
@@ -68,12 +53,6 @@ const selectedBranch = ref('');
 
 // Variable reactiva para almacenar los datos de ventas por día
 const ventasPorDia = ref<Array<{ fecha: string; numeroVentas: number; totalVendido: number }>>([]);
-
-// Lista de sucursales (simulada)
-const branches = ref([
-  { id: 1, name: 'Saltillo 1 - Plaza Cocoa' },
-  { id: 2, name: 'Saltillo 3 - Pedro Figueroa' },
-]);
 
 // Función para obtener datos de ventas
 const obtenerVentasPorDia = async () => {
