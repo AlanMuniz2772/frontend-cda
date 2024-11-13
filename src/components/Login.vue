@@ -44,6 +44,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { handleLogin, handleRegister } from '../api';
+import { useRouter } from 'vue-router';
+import { login } from '../store';
+
+const router = useRouter();
 
 const mode = ref<'login' | 'signup'>('login'); // Nueva propiedad mode para alternar
 const name = ref('');
@@ -63,7 +67,9 @@ function submitForm() {
     fullName.value = `${name.value} ${lastName.value}`;
     handleRegister(fullName.value, email.value, password.value, confirmPassword.value);
   } else {
-    handleLogin(username.value, password.value);
+    login();
+    router.push('/'); 
+    
   }
 }
 </script>
