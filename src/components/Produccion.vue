@@ -169,6 +169,7 @@ const resetForm = () => {
 };
 </script>
 
+
 <style scoped>
 /* Estilos de la tabla */
 .produccion {
