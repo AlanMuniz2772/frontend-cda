@@ -1,9 +1,7 @@
 <template>
   <div class="produccion">
     <h2>Producción</h2>
-
-    <!-- Botón de agregar producto -->
-    <button @click="showAddForm = true" class="add-product-btn">Agregar Producto</button>
+    <button @click="showAddForm = true; showEditForm = false" class="add-product-btn">Agregar Producto</button>
 
     <!-- Tabla de productos -->
     <div class="table-container">
@@ -13,7 +11,7 @@
             <th>Nombre</th>
             <th>Costo</th>
             <th>Precio</th>
-            <th></th> <!-- Columna para el ícono de edición -->
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -22,22 +20,15 @@
             <td>{{ producto.costo }}</td>
             <td>{{ producto.precio }}</td>
             <td>
-              <!-- Ícono de lápiz para editar producto -->
-              <button @click="editProduct(producto)" class="edit-btn">✏️</button>
+              <!-- Botón de edición -->
+              <button @click="editProduct(index)" class="edit-btn">✏️</button>
             </td>
           </tr>
         </tbody>
       </table>
-
-      <!-- Paginación -->
-      <div class="pagination">
-        <button>Primera Página</button>
-        <button v-for="page in totalPaginas" :key="page">{{ page }}</button>
-        <button>Última Página</button>
-      </div>
     </div>
 
-    <!-- Formulario para agregar o editar producto -->
+    <!-- Formulario de agregar o editar producto -->
     <div v-if="showAddForm || showEditForm" class="product-form">
       <h3>{{ showEditForm ? 'Editar Producto' : 'Agregar Producto' }}</h3>
 
@@ -86,7 +77,6 @@
         <button @click="addInsumo" class="add-insumo-btn">Agregar Insumo</button>
       </div>
 
-      <!-- Botones de acción -->
       <div class="action-buttons">
         <button @click="saveProduct" class="save-btn">{{ showEditForm ? 'Guardar Cambios' : 'Agregar Producto' }}</button>
         <button @click="cancelForm" class="cancel-btn">Cancelar</button>
@@ -96,8 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { fetchProductos, totalPaginas } from '../api';
+import { ref } from 'vue';
 
 interface Producto {
   nombre: string;
@@ -108,66 +97,89 @@ interface Producto {
   insumos: Array<{ nombre: string; cantidad: number; unidad: string }>;
 }
 
-// Variables reactivas para la lista de productos y el estado del formulario
-const productos = ref<Producto[]>([]);
-const insumosExistentes = ref(['Harina', 'Azúcar', 'Leche']); // Insumos disponibles
-const totalPaginas = ref(6);
+// Datos iniciales de productos
+const productos = ref<Producto[]>([
+  {
+    nombre: 'Producto 1',
+    costo: 10,
+    utilidad: 20,
+    precio: 30,
+    disponible: true,
+    insumos: [
+      { nombre: 'Harina', cantidad: 500, unidad: 'gr' },
+      { nombre: 'Azúcar', cantidad: 200, unidad: 'gr' }
+    ]
+  },
+  {
+    nombre: 'Producto 2',
+    costo: 15,
+    utilidad: 25,
+    precio: 40,
+    disponible: false,
+    insumos: [
+      { nombre: 'Leche', cantidad: 1, unidad: 'litro' }
+    ]
+  }
+]);
 
-// Estados del formulario
+const insumosExistentes = ref(['Harina', 'Azúcar', 'Leche', 'Mantequilla']); // Insumos disponibles
 const showAddForm = ref(false);
 const showEditForm = ref(false);
+const editingIndex = ref<number | null>(null); // Índice del producto en edición
+
+// Objeto para el formulario del producto
 const productForm = ref<Producto>({
   nombre: '',
   costo: 0,
   utilidad: 0,
   precio: 0,
   disponible: true,
-  insumos: [],
+  insumos: []
 });
 
-// Función para obtener los productos al montar el componente
-const obtenerProductos = async () => {
-  productos.value = await fetchProductos();
-};
-onMounted(obtenerProductos);
-
-// Función para mostrar el formulario de edición con datos del producto
-const editProduct = (producto: Producto) => {
-  productForm.value = { ...producto, insumos: [...producto.insumos] };
+// Función para activar el modo de edición y rellenar el formulario
+const editProduct = (index: number) => {
+  editingIndex.value = index;
+  productForm.value = { ...productos.value[index], insumos: [...productos.value[index].insumos] };
   showEditForm.value = true;
+  showAddForm.value = false;
 };
 
-// Función para guardar producto (agregar o actualizar)
+// Función para guardar cambios o agregar un nuevo producto
 const saveProduct = () => {
   if (showAddForm.value) {
+    // Agregar producto
     productos.value.push({ ...productForm.value });
-  } else if (showEditForm.value) {
-    const index = productos.value.findIndex((p) => p.nombre === productForm.value.nombre);
-    if (index !== -1) productos.value[index] = { ...productForm.value };
+  } else if (showEditForm.value && editingIndex.value !== null) {
+    // Guardar cambios en el producto existente
+    productos.value[editingIndex.value] = { ...productForm.value };
   }
   resetForm();
 };
 
-// Función para agregar un nuevo insumo al formulario de producto
+// Función para agregar un insumo al producto actual en el formulario
 const addInsumo = () => {
   productForm.value.insumos.push({ nombre: '', cantidad: 0, unidad: 'gr' });
 };
 
-// Función para eliminar un insumo del formulario de producto
+// Función para eliminar un insumo del producto actual en el formulario
 const removeInsumo = (index: number) => {
   productForm.value.insumos.splice(index, 1);
 };
 
-// Función para cancelar y resetear el formulario
+// Función para cancelar el formulario de edición/agregado
 const cancelForm = () => resetForm();
 
-// Función para resetear los datos del formulario
+// Función para restablecer el formulario
 const resetForm = () => {
   productForm.value = { nombre: '', costo: 0, utilidad: 0, precio: 0, disponible: true, insumos: [] };
   showAddForm.value = false;
   showEditForm.value = false;
+  editingIndex.value = null;
 };
 </script>
+
+
 
 
 <style scoped>
