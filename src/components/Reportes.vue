@@ -1,6 +1,6 @@
 <template>
   <div class="reportes-container">
-    <h2>Reportes</h2>
+    <h2>Reportes de venta</h2>
     
     <!-- Tabla de Ventas por Día -->
     <div class="table-container">
@@ -23,50 +23,74 @@
       </table>
     </div>
 
-    <!-- Tabla de Producto Más Vendido -->
     <div class="table-container">
-      <h3>Producto Más Vendido</h3>
+      <h3>Ventas por Mes</h3>
+      
       <table>
         <thead>
           <tr>
-            <th>Producto</th>
-            <th>Cantidad Vendida</th>
+            <th>Mes</th>
+            <th>Ventas Enero</th>
+            <th>Ventas Febrero</th>
+            <th>Ventas Marzo</th>
+            <th>Ventas Abril</th>
+            <th>Ventas Mayo</th>
+            <th>Ventas Junio</th>
+            <th>Ventas Julio</th>
+            <th>Ventas Agosto</th>
+            <th>Ventas Septiembre</th>
+            <th>Ventas Octubre</th>
+            <th>Ventas Noviembre</th>
+            <th>Ventas Diciembre</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="producto in productosMasVendidos" :key="producto.nombre">
-            <td>{{ producto.nombre }}</td>
-            <td>{{ producto.cantidadVendida }}</td>
+          <tr v-for="(venta, index) in ventasMensuales" :key="index">
+            <td>{{ venta.mes }}</td>
+            <td>{{ venta.enero }}</td>
+            <td>{{ venta.febrero }}</td>
+            <td>{{ venta.marzo }}</td>
+            <td>{{ venta.abril }}</td>
+            <td>{{ venta.mayo }}</td>
+            <td>{{ venta.junio }}</td>
+            <td>{{ venta.julio }}</td>
+            <td>{{ venta.agosto }}</td>
+            <td>{{ venta.septiembre }}</td>
+            <td>{{ venta.octubre }}</td>
+            <td>{{ venta.noviembre }}</td>
+            <td>{{ venta.diciembre }}</td>
           </tr>
         </tbody>
       </table>
     </div>
+    
+    
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { fetchVentasPorDia, fetchProductosMasVendidos } from '../api';
+import { fetchVentasPorDia, fetchVentasPorMes } from '../api';
 
 
     // Variables reactivas para almacenar los datos de ventas por día y productos más vendidos
     const ventasPorDia = ref<Array<{ fecha: string; numeroVentas: number; totalVendido: number }>>([]);
-    const productosMasVendidos = ref<Array<{ nombre: string; cantidadVendida: number }>>([]);
+    const ventasMensuales = ref<Array<{ mes: string; enero: number; febrero: number; marzo: number; abril: number; mayo: number; junio: number; julio: number; agosto: number; septiembre: number; octubre: number; noviembre: number; diciembre: number }>>([]);
+
 
     // Función para obtener los datos de ventas por día
     const obtenerVentasPorDia = async () => {
       ventasPorDia.value = await fetchVentasPorDia();
     };
 
-    // Función para obtener los productos más vendidos
-    const obtenerProductosMasVendidos = async () => {
-      productosMasVendidos.value = await fetchProductosMasVendidos();
+    const obtenerVentasPorMes = async () => {
+      ventasMensuales.value = await fetchVentasPorMes();
     };
 
     // Llamamos a ambas funciones cuando el componente se monta
     onMounted(() => {
       obtenerVentasPorDia();
-      obtenerProductosMasVendidos();
+      obtenerVentasPorMes();
     });
 
     

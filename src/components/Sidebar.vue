@@ -25,36 +25,35 @@
 
   <!-- Contenido principal -->
   <div class="content">
-    <Reportes v-if="selectedSubsection === 'Reportes'" />
-    <VentasPorMes v-if="selectedSubsection === 'Venta de mes'" />
-    <VentasPorDia v-if="selectedSubsection === 'Venta por dia'" />
-    <Produccion v-if="selectedSubsection === 'Productos' && selectedSection === 'Produccion'" />
-    <Insumos v-if="selectedSubsection === 'Insumos' && selectedSection === 'Produccion'" />
+    <Reportes v-if="selectedSubsection === 'Reportes de venta'" />
+    <Produccion v-if="selectedSubsection === 'Productos' && selectedSection === 'Gestion Productos'" />
+    <Insumos v-if="selectedSubsection === 'Insumos' && selectedSection === 'Gestion Insumos'" />
     <OrdenesDeCompra v-if="selectedSubsection === 'Ordenes de compra'" />
-    <Inventarios v-if="selectedSubsection === 'Inventarios'" />
+    <Inventarios v-if="selectedSubsection === 'Visualizacion de inventario'" />
     <Usuarios v-if="selectedSubsection === 'Usuarios'" />
     <VentasPorProducto v-if="selectedSubsection === 'Ventas por producto'" />
+    <ProductoMasVendido v-if="selectedSubsection === 'Producto mas vendido'" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import Reportes from './Reportes.vue';
-import VentasPorMes from './VentasPorMes.vue';
-import VentasPorDia from './VentasPorDia.vue';
 import OrdenesDeCompra from './OrdenesDeCompra.vue';
 import Produccion from './Produccion.vue';
 import Insumos from './Insumos.vue';  
 import Inventarios from './Inventarios.vue';
 import Usuarios from './Usuarios.vue';
 import VentasPorProducto from './VentasPorProducto.vue';
+import ProductoMasVendido from './ProductoMasVendido.vue';
 
 const sections = ref([
-  { title: 'Reportes', subsections: ['Reportes', 'Venta de mes', 'Venta por dia', 'Ventas por producto', 'Reporte de asistencia', 'Consumos', 'Historial Ordenes'] },
-  { title: 'Produccion', subsections: ['Productos', 'Insumos', 'Almacenes'] }, 
-  { title: 'Ordenes', subsections: ['Ordenes de compra'] },
-  { title: 'Inventarios', subsections: ['Inventarios', 'Inventarios programados', 'Ajustes de inventario'] },
-  { title: 'Configuracion', subsections: ['Usuarios', 'Sucursales', 'Tipos de pagos', 'Tipos de servicios', 'Configuracion impresoras', 'Monedas Extranjeras'] },
+  { title: 'Reportes', subsections: ['Reportes de venta', 'Ventas por producto', 'Producto mas vendido', 'Reporte de asistencia'] },
+  { title: 'Gestion Productos', subsections: ['Productos'] }, 
+  { title: 'Gestion Insumos', subsections: ['Insumos'] },
+  { title: 'Ordenes', subsections: ['Ordenes de compra', 'Ordenes canceladas'] },
+  { title: 'Inventarios', subsections: ['Visualizacion de inventario', 'Proyeccion reabastecimiento'] },
+  { title: 'Configuracion', subsections: ['Usuarios'] },
   { title: 'Soporte', subsections: ['Soporte'] }
 ]);
 

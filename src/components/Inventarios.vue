@@ -17,7 +17,7 @@
       <thead>
         <tr>
           <th>Fecha</th>
-          <th>Sucursal</th>
+    
           <th>Varianza $</th>
           <th>Varianza %</th>
           <th></th>
@@ -26,7 +26,6 @@
       <tbody>
         <tr v-for="inventory in filteredInventories" :key="inventory.id">
           <td>{{ inventory.date }}</td>
-          <td>{{ inventory.branch }}</td>
           <td :class="{ negative: inventory.varianceDollar < 0 }">
             {{ formatCurrency(inventory.varianceDollar) }}
           </td>
