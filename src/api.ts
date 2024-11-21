@@ -199,6 +199,7 @@ export async function insertarInsumo(
   nombre: string, 
   costo: number, 
   cantidad_tienda: number,
+  cantidad_captura: number,
   unidad_medida: string,
   is_available: boolean
 ) {
@@ -208,6 +209,7 @@ export async function insertarInsumo(
       nombre, 
       costo, 
       cantidad_tienda,
+      cantidad_captura,
       unidad_medida,
       is_available
     });
@@ -244,5 +246,34 @@ export async function fetchInsumosProductos() {
   }
 }
 
+//funcion para actualizar un insumo
+export async function actualizarInsumo(
+  id: number,
+  id_tienda: number, 
+  nombre: string, 
+  costo: number, 
+  cantidad_tienda: number,
+  cantidad_captura: number,
+  unidad_medida: string,
+  is_available: boolean
+) {
+  try {
+    const response = await axios.put(`${BASE_URL}/api/update/insumos/${id}`, { 
+      id_tienda, 
+      nombre, 
+      costo, 
+      cantidad_tienda,
+      cantidad_captura,
+      unidad_medida,
+      is_available
+    });
+    
+    console.log("Insumo actualizado con éxito, ID:", response.data.id);
+    return response.data;  // Devuelve el ID del insumo actualizado
+  } catch (error) {
+    console.error("Error al actualizar insumo:", error);
+    return null; // Retorna null en caso de error
+  }
+}
 
 

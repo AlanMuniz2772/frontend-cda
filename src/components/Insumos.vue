@@ -24,7 +24,9 @@
               <th>Nombre</th>
               <th>Costo</th>
               <th>Cantidad en tienda</th>
+              <th>Cantidad capturada</th>
               <th>Unidad de medida</th>
+              <th>Disponibe</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -32,8 +34,10 @@
             <tr v-for="(insumo, index) in filteredInsumos" :key="index">
               <td>{{ insumo.nombre }}</td>
               <td>{{ insumo.costo }}</td>
-              <td>{{ insumo.cantidadEnTienda }}</td>
-              <td>{{ insumo.unidadDeMedida }}</td>
+              <td>{{ insumo.cantidad_tienda }}</td>
+              <td>{{ insumo.cantidad_captura }}</td>
+              <td>{{ insumo.unidad_medida }}</td>
+              <td>{{ insumo.is_available }}</td>
               <td>
                 <button @click="editInsumo(insumo)" class="edit-button">✏️</button>
               </td>
@@ -53,10 +57,16 @@
           <input v-model="currentInsumo.costo" type="number" />
   
           <label>Cantidad en tienda:</label>
-          <input v-model="currentInsumo.cantidadEnTienda" type="number" />
-  
+          <input v-model="currentInsumo.cantidad_tienda" type="number" />
+          
+          <label>Cantidad capturada:</label>
+          <input v-model="currentInsumo.cantidad_captura" type="number" />
+
           <label>Unidad de medida:</label>
-          <input v-model="currentInsumo.unidadDeMedida" type="text" />
+          <input v-model="currentInsumo.unidad_medida" type="text" />
+
+          <label>Disponible:</label>
+          <input v-model="currentInsumo.is_available" type="number" />
   
           <div class="modal-buttons">
             <button @click="saveInsumo">{{ isEditing ? "Guardar" : "Agregar" }}</button>
@@ -68,36 +78,64 @@
   </template>
   
   <script setup lang="ts">
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
+  import { fetchInsumos, insertarInsumo, actualizarInsumo} from '../api';
   
   interface Insumo {
+    id: number;
     nombre: string;
     costo: number;
-    cantidadEnTienda: number;
-    unidadDeMedida: string;
+    cantidad_tienda: number;
+    cantidad_captura?: number; // Opcional si no se utiliza siempre
+    unidad_medida: string;
+    is_available: boolean;
   }
-
-  const insumos = ref<Insumo[]>([
-    { nombre: 'Harina', costo: 10, cantidadEnTienda: 100, unidadDeMedida: 'kg' },
-    { nombre: 'Azúcar', costo: 15, cantidadEnTienda: 50, unidadDeMedida: 'kg' },
-    { nombre: 'Leche', costo: 8, cantidadEnTienda: 20, unidadDeMedida: 'L' },
-  ]);
   
+  // Variables reactivas
+  const insumos = ref<Insumo[]>([]);
+  const filteredInsumos = ref<Insumo[]>([]);
   const searchQuery = ref('');
-  const filteredInsumos = ref<Insumo[]>([...insumos.value]);
   const showModal = ref(false);
   const isEditing = ref(false);
-  const currentInsumo = ref<Insumo>({ nombre: '', costo: 0, cantidadEnTienda: 0, unidadDeMedida: '' });
+  
+  // Asegúrate de inicializar todos los campos de `currentInsumo`
+  const currentInsumo = ref<Partial<Insumo>>({
+    id: 0,
+    nombre: '',
+    costo: 0,
+    cantidad_tienda: 0,
+    cantidad_captura: 0,
+    unidad_medida: '',
+    is_available: true,
+  });
+  
+  // Métodos
+  const obtenerInsumos = async () => {
+    try {
+      insumos.value = await fetchInsumos();
+      searchInsumos(); // Filtra con base en la consulta actual (si existe)
+    } catch (error) {
+      console.error('Error al obtener insumos:', error);
+    }
+  };
   
   const searchInsumos = () => {
-    filteredInsumos.value = insumos.value.filter((insumo: Insumo) =>
+    filteredInsumos.value = insumos.value.filter((insumo) =>
       insumo.nombre.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
   };
   
   const openAddInsumo = () => {
     isEditing.value = false;
-    currentInsumo.value = { nombre: '', costo: 0, cantidadEnTienda: 0, unidadDeMedida: '' };
+    currentInsumo.value = {
+      id: 0,
+      nombre: '',
+      costo: 0,
+      cantidad_tienda: 0,
+      cantidad_captura: 0,
+      unidad_medida: '',
+      is_available: true,
+    };
     showModal.value = true;
   };
   
@@ -109,19 +147,27 @@
   
   const saveInsumo = () => {
     if (isEditing.value) {
-      const index = insumos.value.findIndex(i => i.nombre === currentInsumo.value.nombre);
-      if (index !== -1) insumos.value[index] = { ...currentInsumo.value };
+      const index = insumos.value.findIndex((i) => i.id === currentInsumo.value.id);
+      if (index !== -1) {
+        actualizarInsumo(currentInsumo.value.id || 0, 1,  currentInsumo.value.nombre || '', currentInsumo.value.costo || 0, currentInsumo.value.cantidad_tienda || 0, currentInsumo.value.cantidad_captura || 0, currentInsumo.value.unidad_medida || '', currentInsumo.value.is_available || true);
+      }
     } else {
-      insumos.value.push({ ...currentInsumo.value });
+      insertarInsumo(1, currentInsumo.value.nombre || '', currentInsumo.value.costo || 0, currentInsumo.value.cantidad_tienda || 0, currentInsumo.value.cantidad_captura || 0, currentInsumo.value.unidad_medida || '', currentInsumo.value.is_available || true); 
     }
     closeModal();
-    searchInsumos();
+    obtenerInsumos();
   };
   
   const closeModal = () => {
     showModal.value = false;
   };
+  
+  // Ejecuta al montar el componente
+  onMounted(() => {
+    obtenerInsumos();
+  });
   </script>
+  
   
   <style scoped>
   /* General padding for the insumos section */
