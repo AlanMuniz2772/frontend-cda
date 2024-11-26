@@ -8,8 +8,6 @@
         <input type="text" placeholder="Rango de Fechas" v-model="searchDate" />
       </label>
 
-      <!-- Botón de nuevo inventario -->
-      <button class="new-inventory-btn">Nuevo Inventario</button>
     </div>
 
     <!-- Tabla de inventarios -->
@@ -32,7 +30,7 @@
           <td :class="{ negative: inventory.variancePercent < 0 }">
             {{ inventory.variancePercent }}%
           </td>
-          <td><button class="view-btn">👁️</button></td>
+          <td><button class="view-btn">Visualizacion de faltantes</button></td>
         </tr>
       </tbody>
     </table>
@@ -144,9 +142,9 @@ const filteredInventories = computed(() => {
   }
   
   .view-btn {
-    background: none;
-    border: none;
+    
     cursor: pointer;
+    
   }
   
   .pagination {

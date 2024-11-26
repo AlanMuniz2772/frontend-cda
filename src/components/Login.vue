@@ -3,8 +3,8 @@
   <div class="login-container">
     <div class="form-box">
       <div>
-        <button class="tab-button" :class="{ active: mode === 'signup' }" @click="setMode('signup')">Sign Up</button>
-        <button class="tab-button" :class="{ active: mode === 'login' }" @click="setMode('login')">Log In</button>
+        <button class="tab-button" :class="{ active: mode === 'signup' }" @click="setMode('signup')">Registro</button>
+        <button class="tab-button" :class="{ active: mode === 'login' }" @click="setMode('login')">Inicio sesion</button>
       </div>
       <div class="header-text">{{ mode === 'signup' ? "Sign Up for Free" : "Log In" }}</div>
       <form @submit.prevent="submitForm">

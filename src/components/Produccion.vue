@@ -12,6 +12,7 @@
             <th>Costo</th>
             <th>Precio</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -21,7 +22,11 @@
             <td>{{ producto.precio }}</td>
             <td>
               <!-- Botón de edición -->
-              <button @click="editProduct(index)" class="edit-btn">✏️</button>
+              <button @click="editProduct(index)" class="edit-btn">Modificar</button>
+            </td>
+            <td>
+              <!-- Botón de eliminación -->
+              <button class="cancel-btn">Eliminar</button>
             </td>
           </tr>
         </tbody>
@@ -30,7 +35,7 @@
 
     <!-- Formulario de agregar o editar producto -->
     <div v-if="showAddForm || showEditForm" class="product-form">
-      <h3>{{ showEditForm ? 'Editar Producto' : 'Agregar Producto' }}</h3>
+      <h3>{{ showEditForm ? 'Modificar Producto' : 'Agregar Producto' }}</h3>
 
       <div class="form-group">
         <label>Nombre:</label>

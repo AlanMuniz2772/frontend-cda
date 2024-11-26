@@ -27,7 +27,8 @@
               <th>Cantidad capturada</th>
               <th>Unidad de medida</th>
               <th>Disponibe</th>
-              <th>Acciones</th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -39,7 +40,10 @@
               <td>{{ insumo.unidad_medida }}</td>
               <td>{{ insumo.is_available }}</td>
               <td>
-                <button @click="editInsumo(insumo)" class="edit-button">✏️</button>
+                <button @click="editInsumo(insumo)" class="edit-button">Modificar</button>
+              </td>
+              <td>
+                <button  class="delete-button">Eliminar</button>
               </td>
             </tr>
           </tbody>
@@ -217,12 +221,14 @@
   
   /* Edit button styling */
   .edit-button {
-    background: none;
-    border: none;
     cursor: pointer;
-    color: #007bff;
   }
   
+  .delete-button {
+    cursor: pointer;
+    background-color: red;
+  }
+
   /* Modal overlay styling */
   .modal-overlay {
     position: fixed;
