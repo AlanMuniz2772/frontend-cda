@@ -1,6 +1,6 @@
 <template>
   <div class="produccion">
-    <h2>Producción</h2>
+    <h2>Productos</h2>
     <button @click="showAddForm = true; showEditForm = false" class="add-product-btn">Agregar Producto</button>
 
     <!-- Tabla de productos -->

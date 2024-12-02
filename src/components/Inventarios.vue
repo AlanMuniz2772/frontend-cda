@@ -16,20 +16,14 @@
         <tr>
           <th>Fecha</th>
     
-          <th>Varianza $</th>
-          <th>Varianza %</th>
+          
           <th></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="inventory in filteredInventories" :key="inventory.id">
           <td>{{ inventory.date }}</td>
-          <td :class="{ negative: inventory.varianceDollar < 0 }">
-            {{ formatCurrency(inventory.varianceDollar) }}
-          </td>
-          <td :class="{ negative: inventory.variancePercent < 0 }">
-            {{ inventory.variancePercent }}%
-          </td>
+          
           <td><button class="view-btn">Visualizacion de faltantes</button></td>
         </tr>
       </tbody>
@@ -71,9 +65,7 @@ const goToPage = (page: number) => {
 };
 
 // Función para formatear el valor monetario
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
-};
+
 
 // Computed para filtrar inventarios por fecha
 const filteredInventories = computed(() => {

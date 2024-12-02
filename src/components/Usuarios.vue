@@ -1,6 +1,6 @@
 <template>
   <div class="usuarios">
-    <h1>Usuarios</h1>
+    <h1>Empleados</h1>
     <table>
       <thead>
         <tr>

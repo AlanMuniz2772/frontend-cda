@@ -30,7 +30,7 @@
     <Insumos v-if="selectedSubsection === 'Insumos' && selectedSection === 'Gestion Insumos'" />
     <OrdenesDeCompra v-if="selectedSubsection === 'Ordenes de venta'" />
     <Inventarios v-if="selectedSubsection === 'Visualizacion de inventario'" />
-    <Usuarios v-if="selectedSubsection === 'Usuarios'" />
+    <Usuarios v-if="selectedSubsection === 'Empleados'" />
     <VentasPorProducto v-if="selectedSubsection === 'Ventas por producto'" />
     <ProductoMasVendido v-if="selectedSubsection === 'Producto mas vendido'" />
   </div>
@@ -53,7 +53,7 @@ const sections = ref([
   { title: 'Gestion Insumos', subsections: ['Insumos'] },
   { title: 'Ordenes', subsections: ['Ordenes de venta', 'Ordenes canceladas'] },
   { title: 'Inventarios', subsections: ['Visualizacion de inventario', 'Proyeccion reabastecimiento'] },
-  { title: 'Configuracion', subsections: ['Usuarios'] },
+  { title: 'Configuracion', subsections: ['Empleados'] },
   { title: 'Soporte', subsections: ['Soporte'] }
 ]);
 

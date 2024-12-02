@@ -3,7 +3,6 @@
         <h2>Productos mas vendidos</h2>
         <!-- Tabla de Producto Más Vendido -->
     <div class="table-container">
-      <h3>Producto Más Vendido</h3>
       <table>
         <thead>
           <tr>
