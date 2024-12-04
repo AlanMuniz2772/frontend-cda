@@ -33,6 +33,8 @@
     <Usuarios v-if="selectedSubsection === 'Usuarios'" />
     <VentasPorProducto v-if="selectedSubsection === 'Ventas por producto'" />
     <ProductoMasVendido v-if="selectedSubsection === 'Producto mas vendido'" />
+    <Reabastecimiento v-if="selectedSubsection === 'Proyección reabastecimiento' && selectedSection === 'Inventarios'" />
+    <OrdenesCanceladas v-if="selectedSubsection === 'Ordenes canceladas' && selectedSection === 'Ordenes'" />
   </div>
 </template>
 
@@ -46,13 +48,15 @@ import Inventarios from './Inventarios.vue';
 import Usuarios from './Usuarios.vue';
 import VentasPorProducto from './VentasPorProducto.vue';
 import ProductoMasVendido from './ProductoMasVendido.vue';
+import Reabastecimiento from './Reabastecimiento.vue';
+import OrdenesCanceladas from './OrdenesCanceladas.vue'; 
 
 const sections = ref([
   { title: 'Reportes', subsections: ['Reportes de venta', 'Ventas por producto', 'Producto mas vendido', 'Reporte de asistencia'] },
   { title: 'Gestion Productos', subsections: ['Productos'] }, 
   { title: 'Gestion Insumos', subsections: ['Insumos'] },
-  { title: 'Ordenes', subsections: ['Ordenes de venta', 'Ordenes canceladas'] },
-  { title: 'Inventarios', subsections: ['Visualizacion de inventario', 'Proyeccion reabastecimiento'] },
+  { title: 'Ordenes', subsections: ['Ordenes de venta', 'Ordenes canceladas'] }, 
+  { title: 'Inventarios', subsections: ['Visualizacion de inventario', 'Proyección reabastecimiento'] }, 
   { title: 'Configuracion', subsections: ['Usuarios'] },
   { title: 'Soporte', subsections: ['Soporte'] }
 ]);
@@ -70,6 +74,9 @@ const selectSubsection = (subsection: string, section: string) => {
   selectedSection.value = section;
 };
 </script>
+
+
+
 
 
 <style scoped>
