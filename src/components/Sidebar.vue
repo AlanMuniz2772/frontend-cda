@@ -48,7 +48,7 @@ import VentasPorProducto from './VentasPorProducto.vue';
 import ProductoMasVendido from './ProductoMasVendido.vue';
 
 const sections = ref([
-  { title: 'Reportes', subsections: ['Reportes de venta', 'Ventas por producto', 'Producto mas vendido', 'Reporte de asistencia'] },
+  { title: 'Reportes', subsections: ['Reportes de venta', 'Ventas por producto', 'Producto mas vendido'] },
   { title: 'Gestion Productos', subsections: ['Productos'] }, 
   { title: 'Gestion Insumos', subsections: ['Insumos'] },
   { title: 'Ordenes', subsections: ['Ordenes de venta', 'Ordenes canceladas'] },
