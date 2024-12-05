@@ -25,7 +25,7 @@
 
   <!-- Contenido principal -->
   <div class="content">
-    <Reportes v-if="selectedSubsection === 'Reportes de venta'" />
+    <Reportes v-if="selectedSubsection === null || selectedSubsection === 'Reportes de venta'" />
     <Produccion v-if="selectedSubsection === 'Productos' && selectedSection === 'Gestion Productos'" />
     <Insumos v-if="selectedSubsection === 'Insumos' && selectedSection === 'Gestion Insumos'" />
     <OrdenesDeCompra v-if="selectedSubsection === 'Ordenes de venta'" />
@@ -36,12 +36,11 @@
     <Reabastecimiento v-if="selectedSubsection === 'Proyección reabastecimiento' && selectedSection === 'Inventarios'" />
     <OrdenesCanceladas v-if="selectedSubsection === 'Ordenes canceladas' && selectedSection === 'Ordenes'" />
     <Soporte v-if="selectedSubsection === 'Soporte'" />
-
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import Reportes from './Reportes.vue';
 import OrdenesDeCompra from './OrdenesDeCompra.vue';
 import Produccion from './Produccion.vue';
@@ -53,7 +52,6 @@ import ProductoMasVendido from './ProductoMasVendido.vue';
 import Reabastecimiento from './Reabastecimiento.vue';
 import OrdenesCanceladas from './OrdenesCanceladas.vue'; 
 import Soporte from './Soporte.vue';
-
 
 const sections = ref([
   { title: 'Reportes', subsections: ['Reportes de venta', 'Ventas por producto', 'Producto mas vendido'] },
@@ -77,7 +75,12 @@ const selectSubsection = (subsection: string, section: string) => {
   selectedSubsection.value = subsection;
   selectedSection.value = section;
 };
+
+watch([selectedSubsection, selectedSection], () => {
+  console.log('Se ha actualizado la subsección o sección seleccionada:', selectedSubsection.value, selectedSection.value);
+});
 </script>
+
 
 <style scoped>
 /* Estilos del sidebar */
