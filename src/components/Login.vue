@@ -3,8 +3,8 @@
   <div class="login-container">
     <div class="form-box">
       <div>
-        <button class="tab-button" :class="{ active: mode === 'signup' }" @click="setMode('signup')">Sign Up</button>
-        <button class="tab-button" :class="{ active: mode === 'login' }" @click="setMode('login')">Log In</button>
+        <button class="tab-button" :class="{ active: mode === 'signup' }" @click="setMode('signup')">Registro</button>
+        <button class="tab-button" :class="{ active: mode === 'login' }" @click="setMode('login')">Inicio sesion</button>
       </div>
       <div class="header-text">{{ mode === 'signup' ? "Sign Up for Free" : "Log In" }}</div>
       <form @submit.prevent="submitForm">
@@ -44,7 +44,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { handleLogin, handleRegister } from '../api';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const mode = ref<'login' | 'signup'>('login'); // Nueva propiedad mode para alternar
 const name = ref('');
 const lastName = ref('');
@@ -63,7 +65,7 @@ function submitForm() {
     fullName.value = `${name.value} ${lastName.value}`;
     handleRegister(fullName.value, email.value, password.value, confirmPassword.value);
   } else {
-    handleLogin(username.value, password.value);
+    handleLogin(username.value, password.value, router);
   }
 }
 </script>

@@ -2,14 +2,16 @@
 <template>
   <header class="header">
     <h1>Mi Punto de venta</h1>
-    <button @click="handleLogout">Cerrar sesión</button>
+    <button @click="handleLogout(router)">Cerrar sesión</button>
   </header>
 </template>
 
 <script setup lang="ts">
 //import { defineProps } from 'vue';
 import { handleLogout } from '../api';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 
 
 </script>

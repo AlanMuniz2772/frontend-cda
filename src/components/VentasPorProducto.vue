@@ -6,13 +6,7 @@
       <!-- Barra de filtros -->
       <div class="filtros">
         <!-- Campo de categoría -->
-        <div class="filtro">
-          <label for="categoria">Categoría</label>
-          <select id="categoria">
-            <option>Seleccione una categoría</option>
-            <!-- Añadir opciones de categorías aquí -->
-          </select>
-        </div>
+        
   
         <!-- Campo de rango de fechas -->
         <div class="filtro">
@@ -21,14 +15,7 @@
           <input type="date" />
         </div>
   
-        <!-- Selector de sucursal -->
-        <div class="filtro">
-          <label for="sucursal">Sucursal</label>
-          <select id="sucursal">
-            <option>Saltillo 3 - Pedro Figueroa</option>
-            <!-- Añadir más sucursales aquí -->
-          </select>
-        </div>
+        
   
         <!-- Botón de búsqueda -->
         <button class="filtro-boton">Aplicar Filtros</button>

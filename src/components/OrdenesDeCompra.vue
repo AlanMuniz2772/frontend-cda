@@ -1,198 +1,182 @@
 <template>
   <div class="ordenes-de-compra">
     <!-- Título -->
-    <h2>Órdenes de Compra</h2>
-
-    <!-- Barra de búsqueda -->
-    <div class="search-bar">
-      <!-- Campo para buscar orden -->
-      <div class="search-field">
-        <label for="order-search">Buscar Orden</label>
-        <input id="order-search" type="text" placeholder="Escriba # Orden" v-model="searchOrder" />
-      </div>
-
-      <!-- Campo para buscar por rango de fechas -->
-      <div class="search-field">
-        <label for="date-range">Buscar Fecha Orden</label>
-        <input id="date-range" type="text" placeholder="Rango de Fechas" v-model="searchDateRange" />
-      </div>
-
-      <!-- Selector de sucursal -->
-      <div class="search-field">
-        <label for="branch-select">Sucursal</label>
-        <select id="branch-select" v-model="selectedBranch">
-          <option value="" disabled selected>Seleccione Sucursal</option>
-          <option v-for="branch in branches" :key="branch.id" :value="branch.name">{{ branch.name }}</option>
-        </select>
-      </div>
-
-      <!-- Botón de búsqueda -->
-      <button class="search-button" @click="searchOrders">Buscar</button>
-    </div>
-
-    <!-- Mensaje de no hay pedidos -->
-    <div class="no-orders" v-if="filteredOrders.length === 0">
-      Aun no hay pedidos registrados.
-    </div>
+    <h2>Órdenes de Venta</h2>
 
     <!-- Tabla de órdenes -->
-    <div v-else>
+    <div>
       <table>
         <thead>
           <tr>
-            <th>Fecha</th>
-            <th>Número de Ventas</th>
-            <th>Total Vendido</th>
+            <th>Orden</th>
+            <th>Hora</th>
+            <th>Pago</th>
+            <th>Total</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="order in filteredOrders" :key="order.fecha">
-            <td>{{ order.fecha }}</td>
-            <td>{{ order.numeroVentas }}</td>
-            <td>{{order.totalVendido }}</td>
+          <tr v-for="(order, index) in currentOrders" :key="index">
+            <td>{{ order.id }}</td>
+            <td>{{ order.hora }}</td>
+            <td>{{ order.tipo_pago }}</td>
+            <td>${{ order.total }}</td>
+            <td class="action-cell">
+              <button class="delete-button" @click="eliminarOrden(order.id, order.tipo_pago, 0)">
+                🗑️
+              </button>
+            </td>
+         
           </tr>
         </tbody>
       </table>
+      
+      <!-- Paginación -->
+      <div class="pagination">
+        <button @click="prevPage" :disabled="currentPage === 1">Primera Página</button>
+        <span v-for="page in totalPages" :key="page">
+          <button
+            :class="{ active: currentPage === page }"
+            @click="changePage(page)"
+          >
+            {{ page }}
+          </button>
+        </span>
+        <button @click="nextPage" :disabled="currentPage === totalPages">
+          Última Página
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { fetchVentasPorDia } from '../api'; // Importa la función fetchVentasPorDia desde api.ts
+import { ref, computed, onMounted } from "vue";
+import {fetchOrdenVenta, deleteOrder} from '../api';
 
-// Variables de búsqueda
-const searchOrder = ref('');
-const searchDateRange = ref('');
-const selectedBranch = ref('');
 
-// Variable reactiva para almacenar los datos de ventas por día
-const ventasPorDia = ref<Array<{ fecha: string; numeroVentas: number; totalVendido: number }>>([]);
-
-// Lista de sucursales (simulada)
-const branches = ref([
-  { id: 1, name: 'Saltillo 1 - Plaza Cocoa' },
-  { id: 2, name: 'Saltillo 3 - Pedro Figueroa' },
-]);
-
-// Función para obtener datos de ventas
-const obtenerVentasPorDia = async () => {
-  ventasPorDia.value = await fetchVentasPorDia();
-};
-
-// Filtrar las órdenes en función de los criterios de búsqueda
-const filteredOrders = computed(() => {
-  return ventasPorDia.value.filter(order => {
-    const matchesOrderNumber = searchOrder.value === '' || order.numeroVentas.toString().includes(searchOrder.value);
-    const matchesDate = searchDateRange.value === '' || order.fecha.includes(searchDateRange.value);
-    return matchesOrderNumber && matchesDate;
-  });
+onMounted(async () => {
+  obtenerOrdenes();
 });
 
-// Función de búsqueda (opcional)
-const searchOrders = () => {
-  console.log('Buscar órdenes con:', searchOrder.value, searchDateRange.value, selectedBranch.value);
+interface Order {
+  id: number;
+  hora: string;
+  tipo_pago: string;
+  total: number;
+}
+
+const orders = ref<Order[]>([]);
+
+// Lógica de paginación
+const currentPage = ref(1);
+const itemsPerPage = 5;
+
+const obtenerOrdenes = async () => {
+  orders.value = await fetchOrdenVenta();
+  console.log(orders.value)
+    };
+
+const totalPages = computed(() =>
+  Math.ceil(orders.value.length / itemsPerPage)
+);
+
+const currentOrders = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return orders.value.slice(start, end);
+});
+
+const changePage = (page: number) => {
+  currentPage.value = page;
 };
 
-// Llama a obtenerVentasPorDia cuando el componente se monta
-onMounted(obtenerVentasPorDia);
+const prevPage = () => {
+  if (currentPage.value > 1) currentPage.value--;
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) currentPage.value++;
+};
+
+// Lógica para eliminar una orden
+const eliminarOrden = (id: number, tipo_pago:string, is_available:number) => {
+  deleteOrder(id, tipo_pago,is_available);
+  obtenerOrdenes();
+};
 </script>
 
+<style scoped>
+.ordenes-de-compra {
+  padding: 20px;
+}
 
-  <style scoped>
-  .ordenes-de-compra {
-    padding: 20px;
-  }
-  
-  h2 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  .search-bar {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .search-field {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .search-field label {
-    font-size: 14px;
-    margin-bottom: 5px;
-    color: #000000;
-  }
-  
-  .search-field input,
-  .search-field select {
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    width: 200px;
-  }
-  
-  .search-button {
-    padding: 10px 20px;
-    font-size: 14px;
-    color: white;
-    background-color: #28a745;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .search-button:hover {
-    background-color: #218838;
-  }
-  
-  .no-orders {
-    font-size: 18px;
-    color: #000000;
-    text-align: center;
-    margin-top: 20px;
-  }
+h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
 
-  table {
+table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 thead {
-  background-color: #4CAF50; /* Color de encabezado */
-  color: white;
+  background-color: white; /* Fondo blanco */
+  color: black; /* Letras negras */
 }
 
+
 th, td {
-  padding: 12px;
+  padding: 10px;
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #181717;
 }
 
 tr:hover {
-  background-color: #f1f1f1; /* Efecto de hover en filas */
+  background-color: #f1f1f1; /* Efecto hover */
 }
 
-td {
-  color: #333;
-}
-
-.no-orders {
-  font-size: 18px;
-  color: #000000;
+.action-cell {
   text-align: center;
-  margin-top: 20px;
-  background-color: #f8d7da; /* Fondo para mensaje de no pedidos */
-  padding: 15px;
-  border-radius: 5px;
 }
 
+.delete-button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #dc3545;
+  cursor: pointer;
+}
 
-  </style>
-  
+.delete-button:hover {
+  color: #a71d2a;
+}
+
+/* Estilos de la paginación */
+.pagination {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.pagination button {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: rgb(179, 170, 170);
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: #4caf50;
+  color: white;
+}
+
+.pagination button:disabled {
+  background-color: #8e9194;
+  cursor: not-allowed;
+}
+</style>

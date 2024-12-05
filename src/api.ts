@@ -5,6 +5,8 @@ import datos from './tablas.json';
 import { ref } from 'vue';
 import axios from 'axios';
 
+export const totalPaginas = ref(datos.produccion.totalPaginas);
+
 axios.defaults.withCredentials = true;
 
 const BASE_URL = 'https://api.pos.hosthive.com.mx';
@@ -21,8 +23,8 @@ const headers: Record<string, string> = { 'Content-Type': 'application/json;char
 
 export const usuarios = ref<User[]>([]);
 
-export async function handleLogin(email: string, password: string) {
-  const router = useRouter();
+// funcion para hacer login
+export async function handleLogin(email: string, password: string, router: ReturnType<typeof useRouter>) {
 
   try {
     await axios.get(BASE_URL + "/sanctum/csrf-cookie", {
@@ -50,6 +52,7 @@ export async function handleLogin(email: string, password: string) {
   }
 }
 
+// funcion para hacer registro de usuario
 export async function handleRegister(name: string, email: string, password: string, password_confirmation: string) {
   const router = useRouter();
 
@@ -81,8 +84,9 @@ export async function handleRegister(name: string, email: string, password: stri
   }
 }
 
-export async function handleLogout() {
-  const router = useRouter();
+
+// funcion para cerrar sesion
+export async function handleLogout(router: ReturnType<typeof useRouter>) {
 
   try {
     const response = await axios.post(BASE_URL + '/logout', {}, { headers });
@@ -124,17 +128,7 @@ export async function fetchProductosMasVendidos() {
   }
 }
 
-//funcion para obtener productos
-export async function fetchProductos() {
-  try {
-    const response = await axios.get(`${BASE_URL}/api/data/productos`);
-    console.log("Productos:", response.data.productos);
-    return response.data.productos; // Devuelve la lista de productos
-  } catch (error) {
-    console.error("Error al obtener productos:", error);
-    return [];
-  }
-}
+
 
 //funcion para obtener ventas por mes
 export async function fetchVentasPorMes() {
@@ -148,4 +142,207 @@ export async function fetchVentasPorMes() {
   }
 }
 
-export const totalPaginas = ref(datos.produccion.totalPaginas);
+//funcion para obtener todos los inventarios
+export async function fetchInventarios() {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/data/inventarios`);
+    console.log("Inventarios:", response.data.inventarios);
+    return response.data.inventarios; // Devuelve la lista de inventarios
+  } catch (error) {
+    console.error("Error al obtener inventarios:", error);
+    return [];
+  }
+}
+
+
+
+//funcion para insertar un nuevo insumo
+export async function insertarInsumo(
+  id_tienda: number, 
+  nombre: string, 
+  costo: number, 
+  cantidad_tienda: number,
+  cantidad_captura: number,
+  unidad_medida: string,
+  is_available: boolean
+) {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/insert/insumos`, { 
+      id_tienda, 
+      nombre, 
+      costo, 
+      cantidad_tienda,
+      cantidad_captura,
+      unidad_medida,
+      is_available
+    });
+    
+    console.log("Insumo insertado con éxito, ID:", response.data.id);
+    return response.data;  // Devuelve el ID del insumo insertado
+  } catch (error) {
+    console.error("Error al insertar insumo:", error);
+    return null; // Retorna null en caso de error
+  }
+}
+
+//funcion para obtener todos los insumos
+export async function fetchInsumos() {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/data/insumos`);
+    console.log("Insumos:", response.data.insumos);
+    return response.data.insumos; // Devuelve la lista de insumos
+  } catch (error) {
+    console.error("Error al obtener insumos:", error);
+    return [];
+  }
+}
+
+//funcion para obtner los insumos de productos
+export async function fetchInsumosProductos() {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/data/insumos-productos`);
+    console.log("Insumos de productos:", response.data.insumosProductos);
+    return response.data.insumosProductos; // Devuelve la lista de insumos de productos
+  } catch (error) {
+    console.error("Error al obtener insumos de productos:", error);
+    return [];
+  }
+}
+
+//funcion para actualizar un insumo
+export async function actualizarInsumo(
+  id: number,
+  id_tienda: number, 
+  nombre: string, 
+  costo: number, 
+  cantidad_tienda: number,
+  cantidad_captura: number,
+  unidad_medida: string,
+  is_available: boolean
+) {
+  try {
+    const response = await axios.put(`${BASE_URL}/api/update/insumos/${id}`, { 
+      id_tienda, 
+      nombre, 
+      costo, 
+      cantidad_tienda,
+      cantidad_captura,
+      unidad_medida,
+      is_available
+    });
+    
+    console.log("Insumo actualizado con éxito, ID:", response.data.id);
+    return response.data;  // Devuelve el ID del insumo actualizado
+  } catch (error) {
+    console.error("Error al actualizar insumo:", error);
+    return null; // Retorna null en caso de error
+  }
+}
+
+
+//funcion para obtener los usuarios
+export async function fetchUsers() {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/data/users`);
+    console.log("Usuarios:", response.data.users);
+    return response.data.users; // Devuelve la lista de usuarios
+  } catch (error) {
+    console.error("Error al obtener usuarios:", error);
+    return [];
+  }
+}
+
+//funcion para modificar un usuario
+export async function updateUser(user: { id: number, name: string, password: string, rol_operacion: string, sueldo_semanal: number, bono_semanal: number, horas_trabajadas: number }) {
+  try {
+    const { id, name, password, rol_operacion, sueldo_semanal, bono_semanal, horas_trabajadas } = user;
+    const response = await axios.put(`${BASE_URL}/api/update/users/${id}`, { name, password, rol_operacion, sueldo_semanal, bono_semanal, horas_trabajadas });
+    
+    console.log("Usuario actualizado con éxito, ID:", response.data.id);
+    return response.data;  // Devuelve el ID del usuario actualizado
+  } catch (error) {
+    console.error("Error al actualizar usuario:", error);
+    return null; // Retorna null en caso de error
+  }
+}
+
+//funcion para eliminar usuario
+export async function deleteUser(id: number) {
+  try {
+    const response = await axios.delete(BASE_URL+`/api/delete/users/${id}`);
+    console.log("Usuario eliminado con éxito, ID:", response.data.id);
+    return response.data;  // Devuelve el ID del usuario eliminado
+  } catch (error) {
+    console.error("Error al eliminar usuario:", error);
+    return null; // Retorna null en caso de error
+  }
+}
+
+
+export const fetchProductos = async () => {
+  const response = await axios.get(BASE_URL+ '/api/data/productos');
+  return response.data.productos;
+};
+
+
+
+interface Producto {
+  id: number;
+  nombre: string;
+  costo: number;
+  utilidad: number;
+  precio: number;
+  is_available: boolean;
+  insumos: Insumo[];
+}
+interface Insumo {
+  id: number;
+  nombre: string;
+  cantidad: number;
+  unidad_medida: string;
+}
+
+export const addProducto = async (producto: Producto) => {
+  const response = await axios.post('/api/productos', producto);
+  return response.data;
+};
+
+export const updateProducto = async (producto: Producto) => {
+  await axios.put(`/api/productos/${producto.id}`, producto);
+};
+
+//funcion para eliminar producto
+export const deleteProducto = async (id: number) => {
+  
+  await axios.delete(BASE_URL+`/api/delete/productos/${id}`);
+};
+
+
+export const fetchOrdenVenta = async () => {
+  const response = await axios.get(BASE_URL+ '/api/data/orden-venta');
+  return response.data.ordenes;
+};
+
+//funcion para eliminar orden
+export async function deleteOrder(
+  
+    id: number,
+    tipo_pago: string,
+    is_registerd: number,
+  
+) {
+  try {
+    const response = await axios.put(`${BASE_URL}/api/update/ordenes/${id}`, { 
+      tipo_pago, is_registerd
+    });
+    
+    return response.data;  // Devuelve el ID del insumo actualizado
+  } catch (error) {
+    console.error("Error al actualizar orden:", error);
+    return null; // Retorna null en caso de error
+  }
+}
+
+
+
+

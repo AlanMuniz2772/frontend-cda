@@ -25,34 +25,41 @@
 
   <!-- Contenido principal -->
   <div class="content">
-    <Reportes v-if="selectedSubsection === 'Reportes'" />
-    <VentasPorMes v-if="selectedSubsection === 'Venta de mes'" />
-    <VentasPorDia v-if="selectedSubsection === 'Venta por dia'" />
-    <Produccion v-if="selectedSubsection === 'Productos' && selectedSection === 'Produccion'" />
-    <OrdenesDeCompra v-if="selectedSubsection === 'Ordenes de compra'" />
-    <Inventarios v-if="selectedSubsection === 'Inventarios'" />
+    <Reportes v-if="selectedSubsection === null || selectedSubsection === 'Reportes de venta'" />
+    <Produccion v-if="selectedSubsection === 'Productos' && selectedSection === 'Gestion Productos'" />
+    <Insumos v-if="selectedSubsection === 'Insumos' && selectedSection === 'Gestion Insumos'" />
+    <OrdenesDeCompra v-if="selectedSubsection === 'Ordenes de venta'" />
+    <Inventarios v-if="selectedSubsection === 'Visualizacion de inventario'" />
     <Usuarios v-if="selectedSubsection === 'Usuarios'" />
     <VentasPorProducto v-if="selectedSubsection === 'Ventas por producto'" />
+    <ProductoMasVendido v-if="selectedSubsection === 'Producto mas vendido'" />
+    <Reabastecimiento v-if="selectedSubsection === 'Proyección reabastecimiento' && selectedSection === 'Inventarios'" />
+    <OrdenesCanceladas v-if="selectedSubsection === 'Ordenes canceladas' && selectedSection === 'Ordenes'" />
+    <Soporte v-if="selectedSubsection === 'Soporte'" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import Reportes from './Reportes.vue';
-import VentasPorMes from './VentasPorMes.vue';
-import VentasPorDia from './VentasPorDia.vue';
 import OrdenesDeCompra from './OrdenesDeCompra.vue';
 import Produccion from './Produccion.vue';
+import Insumos from './Insumos.vue';  
 import Inventarios from './Inventarios.vue';
 import Usuarios from './Usuarios.vue';
 import VentasPorProducto from './VentasPorProducto.vue';
+import ProductoMasVendido from './ProductoMasVendido.vue';
+import Reabastecimiento from './Reabastecimiento.vue';
+import OrdenesCanceladas from './OrdenesCanceladas.vue'; 
+import Soporte from './Soporte.vue';
 
 const sections = ref([
-  { title: 'Reportes', subsections: ['Reportes', 'Venta de mes', 'Venta por dia', 'Ventas por producto', 'Reporte de asistencia', 'Consumos', 'Historial Ordenes'] },
-  { title: 'Produccion', subsections: ['Productos', 'Almacenes'] },
-  { title: 'Ordenes', subsections: ['Ordenes de compra'] },
-  { title: 'Inventarios', subsections: ['Inventarios', 'Inventarios programados', 'Ajustes de inventario'] },
-  { title: 'Configuracion', subsections: ['Usuarios', 'Sucursales', 'Tipos de pagos', 'Tipos de servicios', 'Configuracion impresoras', 'Monedas Extranjeras'] },
+  { title: 'Reportes', subsections: ['Reportes de venta', 'Ventas por producto', 'Producto mas vendido'] },
+  { title: 'Gestion Productos', subsections: ['Productos'] }, 
+  { title: 'Gestion Insumos', subsections: ['Insumos'] },
+  { title: 'Ordenes', subsections: ['Ordenes de venta', 'Ordenes canceladas'] }, 
+  { title: 'Inventarios', subsections: ['Visualizacion de inventario'] }, 
+  { title: 'Configuracion', subsections: ['Usuarios'] },
   { title: 'Soporte', subsections: ['Soporte'] }
 ]);
 
@@ -68,14 +75,19 @@ const selectSubsection = (subsection: string, section: string) => {
   selectedSubsection.value = subsection;
   selectedSection.value = section;
 };
+
+watch([selectedSubsection, selectedSection], () => {
+  console.log('Se ha actualizado la subsección o sección seleccionada:', selectedSubsection.value, selectedSection.value);
+});
 </script>
+
 
 <style scoped>
 /* Estilos del sidebar */
 .sidebar {
   width: 250px;
-  background-color: white; /* Cambiado a blanco */
-  color: black; /* Cambiado a negro */
+  background-color: white; /* Fondo blanco */
+  color: black; /* Texto negro */
   height: calc(100vh - 50px);
   padding: 1em 0;
   position: fixed;
@@ -84,6 +96,7 @@ const selectSubsection = (subsection: string, section: string) => {
   overflow-y: auto;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
   z-index: 1000;
+  border-radius: 10px; /* Bordes redondeados */
 }
 
 .menu {
@@ -98,15 +111,15 @@ const selectSubsection = (subsection: string, section: string) => {
 
 .section-title {
   cursor: pointer;
-  padding: 0.75em 1em;
-  background-color: #f2f2f2; /* Cambiado a un tono claro */
-  border-radius: 8px;
+  padding: 0.75em 0.4em;
+  background-color: #f2f2f2; /* Fondo claro */
+  border-radius: 8px; /* Bordes redondeados */
   transition: background-color 0.3s, box-shadow 0.3s;
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* Centramos el ícono y el texto */
   align-items: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  color: black; /* Cambiado a negro */
+  color: black; /* Texto negro */
   font-size: 1rem;
   font-weight: 500;
 }
@@ -131,7 +144,7 @@ const selectSubsection = (subsection: string, section: string) => {
   cursor: pointer;
   transition: background-color 0.3s, padding-left 0.3s;
   font-size: 0.9rem;
-  color: black; /* Cambiado a negro */
+  color: black; /* Texto negro */
 }
 
 .submenu-item:hover {
@@ -160,7 +173,7 @@ const selectSubsection = (subsection: string, section: string) => {
 /* Estilos para el contenido */
 .content {
   background-color: #e0e0e0; /* Fondo claro para contenido */
-  color: black; /* Cambiado a negro */
+  color: black; /* Texto negro */
   padding: 0;
   width: calc(100vw - 250px);
   height: 109vh;
@@ -193,7 +206,7 @@ const selectSubsection = (subsection: string, section: string) => {
 h1, h2 {
   margin: 0;
   padding: 0;
-  color: black; /* Cambiado a negro */
+  color: black; /* Texto negro */
 }
 
 h2 {

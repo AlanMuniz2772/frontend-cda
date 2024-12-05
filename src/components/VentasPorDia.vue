@@ -30,39 +30,7 @@
       </div>
       
       <!-- Tabla de Resumen de Pagos 2 x 9 -->
-      <div class="table-container">
-        <h3>Resumen de Pagos</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Tipo de Pago</th>
-              <th>Monto</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Efectivo</td>
-              <td>{{ pagos.efectivo | formatoMoneda }}</td>
-            </tr>
-            <tr>
-              <td>Tarjeta</td>
-              <td>{{ pagos.tarjeta | formatoMoneda }}</td>
-            </tr>
-            <tr>
-              <td>DiDi</td>
-              <td>{{ pagos.didi | formatoMoneda }}</td>
-            </tr>
-            <tr>
-              <td>Rappi</td>
-              <td>{{ pagos.rappi | formatoMoneda }}</td>
-            </tr>
-            <tr>
-              <td>Uber Eats</td>
-              <td>{{ pagos.uberEats | formatoMoneda }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      
     </div>
   </template>
   
