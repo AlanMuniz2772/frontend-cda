@@ -68,7 +68,7 @@ import { reactive, ref } from "vue";
 
 // Datos de prueba
 const usuarios = reactive([
-  { id: 1, name: "Emmanuel V", type: "Cajero", weeklySalary: 1600, weeklyBonus: 200, weeklyHours: 6 },
+  { id: 1, name: "Larry Cabirria", type: "Cajero", weeklySalary: 1600, weeklyBonus: 200, weeklyHours: 6 },
   { id: 2, name: "María G", type: "Supervisor", weeklySalary: 2000, weeklyBonus: 300, weeklyHours: 8 },
   { id: 3, name: "Luis P", type: "Gerente", weeklySalary: 3000, weeklyBonus: 500, weeklyHours: 10 },
 ]);

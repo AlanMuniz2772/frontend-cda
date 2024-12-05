@@ -35,6 +35,8 @@
     <ProductoMasVendido v-if="selectedSubsection === 'Producto mas vendido'" />
     <Reabastecimiento v-if="selectedSubsection === 'Proyección reabastecimiento' && selectedSection === 'Inventarios'" />
     <OrdenesCanceladas v-if="selectedSubsection === 'Ordenes canceladas' && selectedSection === 'Ordenes'" />
+    <Soporte v-if="selectedSubsection === 'Soporte'" />
+
   </div>
 </template>
 
@@ -50,6 +52,8 @@ import VentasPorProducto from './VentasPorProducto.vue';
 import ProductoMasVendido from './ProductoMasVendido.vue';
 import Reabastecimiento from './Reabastecimiento.vue';
 import OrdenesCanceladas from './OrdenesCanceladas.vue'; 
+import Soporte from './Soporte.vue';
+
 
 const sections = ref([
   { title: 'Reportes', subsections: ['Reportes de venta', 'Ventas por producto', 'Producto mas vendido', 'Reporte de asistencia'] },
@@ -74,10 +78,6 @@ const selectSubsection = (subsection: string, section: string) => {
   selectedSection.value = section;
 };
 </script>
-
-
-
-
 
 <style scoped>
 /* Estilos del sidebar */
