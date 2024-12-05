@@ -12,7 +12,7 @@
       <tbody>
         <tr v-for="user in usuarios" :key="user.id">
           <td>{{ user.name }}</td>
-          <td>{{ user.type }}</td>
+          <td>{{ user.rol_operacion }}</td>
           <td class="actions">
             <button class="btn red" @click="eliminarUsuario(user.id)">Eliminar</button>
             <button class="btn blue" @click="editarUsuario(user)">Modificar</button>
@@ -32,11 +32,11 @@
         </div>
         <div class="form-group">
           <label>Contraseña:</label>
-          <input type="password" placeholder="Capture la contraseña" />
+          <input type="password" v-model="selectedUser.password" placeholder="Capture la contraseña" />
         </div>
         <div class="form-group">
           <label>Rol de Operación:</label>
-          <select v-model="selectedUser.type">
+          <select v-model="selectedUser.rol_operacion">
             <option value="Cajero">Cajero</option>
             <option value="Supervisor">Supervisor</option>
             <option value="Gerente">Gerente</option>
@@ -44,15 +44,15 @@
         </div>
         <div class="form-group">
           <label>Sueldo Semanal:</label>
-          <input type="number" v-model="selectedUser.weeklySalary" />
+          <input type="number" v-model="selectedUser.sueldo_semanal" />
         </div>
         <div class="form-group">
           <label>Bono Semanal:</label>
-          <input type="number" v-model="selectedUser.weeklyBonus" />
+          <input type="number" v-model="selectedUser.bono_semanal" />
         </div>
         <div class="form-group">
           <label>Horas de Trabajo por Semana:</label>
-          <input type="number" v-model="selectedUser.weeklyHours" />
+          <input type="number" v-model="selectedUser.horas_trabajadas" />
         </div>
         <div class="buttons">
           <button class="btn blue" type="button" @click="cancelarEdicion">Cancelar</button>
@@ -64,29 +64,43 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
+import { fetchUsers, updateUser, deleteUser} from "../api";
 
-// Datos de prueba
-const usuarios = reactive([
-  { id: 1, name: "Emmanuel V", type: "Cajero", weeklySalary: 1600, weeklyBonus: 200, weeklyHours: 6 },
-  { id: 2, name: "María G", type: "Supervisor", weeklySalary: 2000, weeklyBonus: 300, weeklyHours: 8 },
-  { id: 3, name: "Luis P", type: "Gerente", weeklySalary: 3000, weeklyBonus: 500, weeklyHours: 10 },
-]);
+
 
 // Estado para el formulario de edición
 const showEditForm = ref(false);
 const selectedUser = reactive({
   id: 0,
   name: "",
-  type: "",
-  weeklySalary: 0,
-  weeklyBonus: 0,
-  weeklyHours: 0,
+  password: "",
+  rol_operacion: "",
+  sueldo_semanal: 0,
+  bono_semanal: 0,
+  horas_trabajadas: 0,
 });
+
+interface Usuario {
+  id: number;
+  name: string;
+  password: string;
+  rol_operacion: string;
+  sueldo_semanal: number;
+  bono_semanal: number;
+  horas_trabajadas: number;
+}
+
+const usuarios = ref<Usuario[]>([]);
+
+const obtenerUsuarios = async() => {
+  usuarios.value = await fetchUsers();
+};  
 
 // Funciones
 const eliminarUsuario = (id: number) => {
-  console.log(`Eliminar usuario con ID: ${id}`);
+  deleteUser(id);
+  obtenerUsuarios();
 };
 
 const editarUsuario = (user: any) => {
@@ -99,13 +113,19 @@ const cancelarEdicion = () => {
 };
 
 const guardarCambios = () => {
-  console.log("Cambios guardados:", selectedUser);
+  console.log(selectedUser);
+  updateUser(selectedUser);
+  obtenerUsuarios();
   showEditForm.value = false;
 };
 
 const nuevoUsuario = () => {
   console.log("Agregar nuevo usuario");
 };
+
+onMounted(() => {
+  obtenerUsuarios();
+});
 </script>
 
 <style scoped>

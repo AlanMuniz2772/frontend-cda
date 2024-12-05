@@ -16,7 +16,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(producto, index) in productos" :key="index">
+          <tr v-for="(producto, index) in productos" :key="producto.id">
             <td>{{ producto.nombre }}</td>
             <td>{{ producto.costo }}</td>
             <td>{{ producto.precio }}</td>
@@ -26,7 +26,7 @@
             </td>
             <td>
               <!-- Botón de eliminación -->
-              <button class="cancel-btn">Eliminar</button>
+              <button @click="deleteProduct(index)" class="cancel-btn">Eliminar</button>
             </td>
           </tr>
         </tbody>
@@ -59,20 +59,16 @@
 
       <div class="form-group">
         <label>Disponible:</label>
-        <input type="checkbox" v-model="productForm.disponible" />
+        <input type="checkbox" v-model="productForm.is_available" />
       </div>
 
       <!-- Sección de insumos -->
       <div class="insumos-section">
         <h4>Insumos</h4>
         <div v-for="(insumo, index) in productForm.insumos" :key="index" class="insumo-item">
-          <select v-model="insumo.nombre">
-            <option v-for="insumoExistente in insumosExistentes" :key="insumoExistente" :value="insumoExistente">
-              {{ insumoExistente }}
-            </option>
-          </select>
+          <input type="text" v-model="insumo.nombre" placeholder="Nombre del insumo" />
           <input type="number" v-model="insumo.cantidad" placeholder="Cantidad" />
-          <select v-model="insumo.unidad">
+          <select v-model="insumo.unidad_medida">
             <option>gr</option>
             <option>ml</option>
             <option>piezas</option>
@@ -90,98 +86,119 @@
   </div>
 </template>
 
+
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import {
+  fetchProductos,
+  addProducto,
+  updateProducto,
+  deleteProducto
+} from '../api';
+
+interface Insumo {
+  id: number;
+  nombre: string;
+  cantidad: number;
+  unidad_medida: string;
+}
 
 interface Producto {
+  id: number;
   nombre: string;
   costo: number;
   utilidad: number;
   precio: number;
-  disponible: boolean;
-  insumos: Array<{ nombre: string; cantidad: number; unidad: string }>;
+  is_available: boolean;
+  insumos: Insumo[];
 }
 
-// Datos iniciales de productos
-const productos = ref<Producto[]>([
-  {
-    nombre: 'Producto 1',
-    costo: 10,
-    utilidad: 20,
-    precio: 30,
-    disponible: true,
-    insumos: [
-      { nombre: 'Harina', cantidad: 500, unidad: 'gr' },
-      { nombre: 'Azúcar', cantidad: 200, unidad: 'gr' }
-    ]
-  },
-  {
-    nombre: 'Producto 2',
-    costo: 15,
-    utilidad: 25,
-    precio: 40,
-    disponible: false,
-    insumos: [
-      { nombre: 'Leche', cantidad: 1, unidad: 'litro' }
-    ]
-  }
-]);
-
-const insumosExistentes = ref(['Harina', 'Azúcar', 'Leche', 'Mantequilla']); // Insumos disponibles
+// Estados reactivos
+const productos = ref<Producto[]>([]);
 const showAddForm = ref(false);
 const showEditForm = ref(false);
-const editingIndex = ref<number | null>(null); // Índice del producto en edición
+const editingIndex = ref<number | null>(null);
 
-// Objeto para el formulario del producto
 const productForm = ref<Producto>({
+  id: 0,
   nombre: '',
   costo: 0,
   utilidad: 0,
   precio: 0,
-  disponible: true,
+  is_available: true,
   insumos: []
 });
 
-// Función para activar el modo de edición y rellenar el formulario
-const editProduct = (index: number) => {
+// Cargar productos e insumos desde la base de datos al montar el componente
+onMounted(async () => {
+  try {
+    productos.value = await fetchProductos();
+    console.log(productos.value);
+  } catch (error) {
+    console.error('Error al cargar datos:', error);
+  }
+});
+
+
+
+// Activar modo de edición
+const editProduct = async (index: number) => {
   editingIndex.value = index;
-  productForm.value = { ...productos.value[index], insumos: [...productos.value[index].insumos] };
+  const producto = productos.value[index];
+  productForm.value = { ...producto };
+  
   showEditForm.value = true;
   showAddForm.value = false;
 };
 
-// Función para guardar cambios o agregar un nuevo producto
-const saveProduct = () => {
-  if (showAddForm.value) {
-    // Agregar producto
-    productos.value.push({ ...productForm.value });
-  } else if (showEditForm.value && editingIndex.value !== null) {
-    // Guardar cambios en el producto existente
-    productos.value[editingIndex.value] = { ...productForm.value };
+// Guardar cambios o agregar un nuevo producto
+const saveProduct = async () => {
+  try {
+    if (showAddForm.value) {
+      const nuevoProducto = await addProducto(productForm.value);
+      productos.value.push(nuevoProducto);
+    } else if (showEditForm.value && editingIndex.value !== null) {
+      await updateProducto(productForm.value);
+      productos.value[editingIndex.value] = { ...productForm.value };
+    }
+    resetForm();
+  } catch (error) {
+    console.error('Error al guardar producto:', error);
   }
-  resetForm();
 };
 
-// Función para agregar un insumo al producto actual en el formulario
+// Eliminar producto
+const deleteProduct = async (index: number) => {
+  try {
+    const producto = productos.value[index];
+    await deleteProducto(producto.id);
+    productos.value.splice(index, 1);
+  } catch (error) {
+    console.error('Error al eliminar producto:', error);
+  }
+};
+
+// Agregar insumo al formulario
 const addInsumo = () => {
-  productForm.value.insumos.push({ nombre: '', cantidad: 0, unidad: 'gr' });
+  productForm.value.insumos.push({ id: 0, nombre: '', cantidad: 0, unidad_medida: 'gr' });
 };
 
-// Función para eliminar un insumo del producto actual en el formulario
+// Eliminar insumo del formulario
 const removeInsumo = (index: number) => {
   productForm.value.insumos.splice(index, 1);
 };
 
-// Función para cancelar el formulario de edición/agregado
+// Cancelar formulario
 const cancelForm = () => resetForm();
 
-// Función para restablecer el formulario
+// Restablecer el formulario
 const resetForm = () => {
-  productForm.value = { nombre: '', costo: 0, utilidad: 0, precio: 0, disponible: true, insumos: [] };
+  productForm.value = { id: 0, nombre: '', costo: 0, utilidad: 0, precio: 0, is_available: true, insumos: [] };
   showAddForm.value = false;
   showEditForm.value = false;
   editingIndex.value = null;
 };
+
 </script>
 
 
