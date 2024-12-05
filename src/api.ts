@@ -24,8 +24,7 @@ const headers: Record<string, string> = { 'Content-Type': 'application/json;char
 export const usuarios = ref<User[]>([]);
 
 // funcion para hacer login
-export async function handleLogin(email: string, password: string) {
-  const router = useRouter();
+export async function handleLogin(email: string, password: string, router: ReturnType<typeof useRouter>) {
 
   try {
     await axios.get(BASE_URL + "/sanctum/csrf-cookie", {
@@ -87,8 +86,7 @@ export async function handleRegister(name: string, email: string, password: stri
 
 
 // funcion para cerrar sesion
-export async function handleLogout() {
-  const router = useRouter();
+export async function handleLogout(router: ReturnType<typeof useRouter>) {
 
   try {
     const response = await axios.post(BASE_URL + '/logout', {}, { headers });

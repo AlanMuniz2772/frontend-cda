@@ -18,7 +18,7 @@ const routes: Array<RouteRecordRaw> = [
       if (!isAuthenticated) {
         next('/login');
       } else {
-        next();
+        next('/');
       }
     },
   },
