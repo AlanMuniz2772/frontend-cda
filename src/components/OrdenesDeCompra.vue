@@ -17,12 +17,12 @@
         </thead>
         <tbody>
           <tr v-for="(order, index) in currentOrders" :key="index">
-            <td>{{ order.orden }}</td>
+            <td>{{ order.id }}</td>
             <td>{{ order.hora }}</td>
-            <td>{{ order.pago }}</td>
-            <td>${{ order.total.toFixed(2) }}</td>
+            <td>{{ order.tipo_pago }}</td>
+            <td>${{ order.total }}</td>
             <td class="action-cell">
-              <button class="delete-button" @click="eliminarOrden(order.orden)">
+              <button class="delete-button" @click="eliminarOrden(order.id, order.tipo_pago, 0)">
                 🗑️
               </button>
             </td>
@@ -51,21 +51,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
+import {fetchOrdenVenta, deleteOrder} from '../api';
 
-// Datos simulados
-const orders = ref([
-  { orden: 1, hora: "4:14PM", pago: "Tarjeta Crédito", total: 80 },
-  { orden: 2, hora: "4:27PM", pago: "Efectivo", total: 80 },
-  { orden: 3, hora: "4:28PM", pago: "Efectivo", total: 160 },
-  { orden: 4, hora: "4:38PM", pago: "Tarjeta Crédito", total: 155 },
-  { orden: 5, hora: "4:40PM", pago: "Tarjeta Crédito", total: 160 },
-  { orden: 6, hora: "4:43PM", pago: "Efectivo", total: 240 },
-]);
+
+onMounted(async () => {
+  obtenerOrdenes();
+});
+
+interface Order {
+  id: number;
+  hora: string;
+  tipo_pago: string;
+  total: number;
+}
+
+const orders = ref<Order[]>([]);
 
 // Lógica de paginación
 const currentPage = ref(1);
 const itemsPerPage = 5;
+
+const obtenerOrdenes = async () => {
+  orders.value = await fetchOrdenVenta();
+  console.log(orders.value)
+    };
 
 const totalPages = computed(() =>
   Math.ceil(orders.value.length / itemsPerPage)
@@ -90,8 +100,9 @@ const nextPage = () => {
 };
 
 // Lógica para eliminar una orden
-const eliminarOrden = (ordenId: number) => {
-  orders.value = orders.value.filter((order) => order.orden !== ordenId);
+const eliminarOrden = (id: number, tipo_pago:string, is_available:number) => {
+  deleteOrder(id, tipo_pago,is_available);
+  obtenerOrdenes();
 };
 </script>
 

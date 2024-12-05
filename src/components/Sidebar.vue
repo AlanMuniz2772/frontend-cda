@@ -60,7 +60,7 @@ const sections = ref([
   { title: 'Gestion Productos', subsections: ['Productos'] }, 
   { title: 'Gestion Insumos', subsections: ['Insumos'] },
   { title: 'Ordenes', subsections: ['Ordenes de venta', 'Ordenes canceladas'] }, 
-  { title: 'Inventarios', subsections: ['Visualizacion de inventario', 'Proyección reabastecimiento'] }, 
+  { title: 'Inventarios', subsections: ['Visualizacion de inventario'] }, 
   { title: 'Configuracion', subsections: ['Usuarios'] },
   { title: 'Soporte', subsections: ['Soporte'] }
 ]);

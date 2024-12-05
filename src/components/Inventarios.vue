@@ -23,12 +23,12 @@
       </thead>
       <tbody>
         <tr v-for="inventory in filteredInventories" :key="inventory.id">
-          <td>{{ inventory.date }}</td>
-          <td :class="{ negative: inventory.varianceDollar < 0 }">
-            {{ formatCurrency(inventory.varianceDollar) }}
+          <td>{{ inventory.fecha }}</td>
+          <td :class="{ negative: inventory.varianza_monetaria < 0 }">
+            {{ formatCurrency(inventory.varianza_monetaria) }}
           </td>
-          <td :class="{ negative: inventory.variancePercent < 0 }">
-            {{ inventory.variancePercent }}%
+          <td :class="{ negative: inventory.varianza_porcentual < 0 }">
+            {{ inventory.varianza_porcentual }}%
           </td>
           <td><button class="view-btn">Visualizacion de faltantes</button></td>
         </tr>
@@ -47,16 +47,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { fetchInventarios } from '../api';
+
+const obtenerInventarios = async () => {
+    
+  inventories.value = await fetchInventarios();
+  };
+
+onMounted(() => {
+  obtenerInventarios();
+  });
 
 // Datos de ejemplo de inventarios con la sucursal
-const inventories = ref([
-  { id: 1, date: '20 Sep 2024', branch: 'Saltillo 1 - Plaza Cocoa', varianceDollar: 0, variancePercent: 0 },
-  { id: 2, date: '18 Sep 2024', branch: 'Saltillo 2 - Centro', varianceDollar: 0, variancePercent: 0 },
-  { id: 3, date: '15 Sep 2024', branch: 'Saltillo 3 - Sur', varianceDollar: 0, variancePercent: 0 },
-  { id: 4, date: '14 Sep 2024', branch: 'Saltillo 2 - Centro', varianceDollar: -95.64, variancePercent: -18.04 },
-  { id: 5, date: '11 Sep 2024', branch: 'Saltillo 1 - Plaza Cocoa', varianceDollar: 0, variancePercent: 0 },
-]);
+const inventories = ref<Inventario[]>([]);
+
+interface Inventario {
+    id: number;
+    fecha: string;
+    varianza_monetaria: number;
+    varianza_porcentual: number;
+  }
 
 // Variables de paginación
 const currentPage = ref(1);
@@ -78,7 +89,7 @@ const formatCurrency = (value: number) => {
 // Computed para filtrar inventarios por fecha
 const filteredInventories = computed(() => {
   return inventories.value.filter(inventory => {
-    return inventory.date.includes(searchDate.value);
+    return inventory.fecha.includes(searchDate.value);
   });
 });
 </script>

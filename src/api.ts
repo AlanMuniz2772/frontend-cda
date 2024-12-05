@@ -271,7 +271,7 @@ export async function updateUser(user: { id: number, name: string, password: str
 //funcion para eliminar usuario
 export async function deleteUser(id: number) {
   try {
-    const response = await axios.delete(`${BASE_URL}/api/delete/users/${id}`);
+    const response = await axios.delete(BASE_URL+`/api/delete/users/${id}`);
     console.log("Usuario eliminado con éxito, ID:", response.data.id);
     return response.data;  // Devuelve el ID del usuario eliminado
   } catch (error) {
@@ -313,9 +313,38 @@ export const updateProducto = async (producto: Producto) => {
   await axios.put(`/api/productos/${producto.id}`, producto);
 };
 
+//funcion para eliminar producto
 export const deleteProducto = async (id: number) => {
-  await axios.delete(`/api/productos/${id}`);
+  
+  await axios.delete(BASE_URL+`/api/delete/productos/${id}`);
 };
+
+
+export const fetchOrdenVenta = async () => {
+  const response = await axios.get(BASE_URL+ '/api/data/orden-venta');
+  return response.data.ordenes;
+};
+
+//funcion para eliminar orden
+export async function deleteOrder(
+  
+    id: number,
+    tipo_pago: string,
+    is_registerd: number,
+  
+) {
+  try {
+    const response = await axios.put(`${BASE_URL}/api/update/ordenes/${id}`, { 
+      tipo_pago, is_registerd
+    });
+    
+    return response.data;  // Devuelve el ID del insumo actualizado
+  } catch (error) {
+    console.error("Error al actualizar orden:", error);
+    return null; // Retorna null en caso de error
+  }
+}
+
 
 
 

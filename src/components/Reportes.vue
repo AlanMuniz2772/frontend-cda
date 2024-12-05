@@ -66,8 +66,7 @@
         </tbody>
       </table>
 
-      <!-- Gráfica de Ventas por Mes -->
-      <canvas ref="chartVentasPorMes" width="400" height="200"></canvas>
+      
     </div>
   </div>
 </template>

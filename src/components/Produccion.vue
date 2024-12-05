@@ -131,15 +131,12 @@ const productForm = ref<Producto>({
 
 // Cargar productos e insumos desde la base de datos al montar el componente
 onMounted(async () => {
-  try {
-    productos.value = await fetchProductos();
-    console.log(productos.value);
-  } catch (error) {
-    console.error('Error al cargar datos:', error);
-  }
+  obtenerProductos();
 });
 
-
+const obtenerProductos = async () => {
+  productos.value = await fetchProductos();
+    };
 
 // Activar modo de edición
 const editProduct = async (index: number) => {
@@ -172,7 +169,7 @@ const deleteProduct = async (index: number) => {
   try {
     const producto = productos.value[index];
     await deleteProducto(producto.id);
-    productos.value.splice(index, 1);
+    obtenerProductos();
   } catch (error) {
     console.error('Error al eliminar producto:', error);
   }
