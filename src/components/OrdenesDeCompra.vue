@@ -19,10 +19,10 @@
           <tr v-for="(order, index) in currentOrders" :key="index">
             <td>{{ order.id }}</td>
             <td>{{ order.hora }}</td>
-            <td>{{ order.tipo_pago }}</td>
+            <td>{{ order.tipo_pago }}</td>  
             <td>${{ order.total }}</td>
             <td class="action-cell">
-              <button class="delete-button" @click="eliminarOrden(order.id, order.tipo_pago, 0)">
+              <button class="delete-button" @click="eliminarOrden(order.id, 0)">
                 🗑️
               </button>
             </td>
@@ -100,8 +100,8 @@ const nextPage = () => {
 };
 
 // Lógica para eliminar una orden
-const eliminarOrden = (id: number, tipo_pago:string, is_available:number) => {
-  deleteOrder(id, tipo_pago,is_available);
+const eliminarOrden = (id: number, is_registered:number) => {
+  deleteOrder(id,is_registered);
   obtenerOrdenes();
 };
 </script>

@@ -23,10 +23,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Header from './components/Header.vue';
 import Sidebar from './components/Sidebar.vue';
-import store from './store'; // Importa la tienda
+import store from './store';
+import {login, isValidSession} from './store'; // Importa la tienda
+
+
+onMounted(() => {
+  if (isValidSession()) {
+    login();
+  }
+  
+});
 
 // Estado para controlar la apertura/cierre del sidebar
 const sidebarOpen = ref(true);

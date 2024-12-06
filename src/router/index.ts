@@ -5,18 +5,18 @@ import Login from '../components/Login.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/login',
+    path: '/',
     name: 'Login',
     component: Login,
   },
   {
-    path: '/',
+    path: '/home',
     name: 'Home',
     component: Home,
     beforeEnter: (_to, _from, next) => {
       const isAuthenticated = localStorage.getItem('authenticated');
       if (!isAuthenticated) {
-        next('/login');
+        next('/');
       } else {
         next('/');
       }

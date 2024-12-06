@@ -15,4 +15,8 @@ export function logout() {
   sessionStorage.removeItem('authenticated');
 }
 
+export function isValidSession(){
+  return sessionStorage.getItem('authenticated')
+}
+
 export default store;
