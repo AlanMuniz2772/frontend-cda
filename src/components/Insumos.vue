@@ -1,109 +1,134 @@
 <template>
-    <div class="insumos">
-      <h2>Insumos</h2>
-  
-      <!-- Barra de búsqueda -->
-      <div class="search-section">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Escriba nombre, código o unidad de medida"
-          class="search-input"
-        />
-        <button @click="searchInsumos">Buscar</button>
-      </div>
-  
-      <!-- Botón para agregar insumo -->
-      <button @click="openAddInsumo" class="add-button">Agregar Insumo</button>
-  
-      <!-- Contenedor de tabla de insumos con scroll -->
-      <div class="table-container">
-        <table class="product-table">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Costo</th>
-              <th>Cantidad en tienda</th>
-              <th>Cantidad capturada</th>
-              <th>Unidad de medida</th>
-              <th>Disponibe</th>
-              <th></th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(insumo, index) in filteredInsumos" :key="index">
-              <td>{{ insumo.nombre }}</td>
-              <td>{{ insumo.costo }}</td>
-              <td>{{ insumo.cantidad_tienda }}</td>
-              <td>{{ insumo.cantidad_captura }}</td>
-              <td>{{ insumo.unidad_medida }}</td>
-              <td>{{ insumo.is_available }}</td>
-              <td>
-                <button @click="editInsumo(insumo)" class="edit-button">Modificar</button>
-              </td>
-              <td>
-                <button  class="delete-button">Eliminar</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-  
-      <!-- Modal para agregar/modificar insumo -->
-      <div v-if="showModal" class="modal-overlay">
-        <div class="modal">
-          <h3>{{ isEditing ? "Modificar Insumo" : "Agregar Insumo" }}</h3>
-          <label>Nombre:</label>
-          <input v-model="currentInsumo.nombre" type="text" />
-  
-          <label>Costo:</label>
-          <input v-model="currentInsumo.costo" type="number" />
-  
-          <label>Cantidad en tienda:</label>
-          <input v-model="currentInsumo.cantidad_tienda" type="number" />
-          
-          <label>Cantidad capturada:</label>
-          <input v-model="currentInsumo.cantidad_captura" type="number" />
+  <div class="insumos">
+    <h2>Insumos</h2>
 
-          <label>Unidad de medida:</label>
-          <input v-model="currentInsumo.unidad_medida" type="text" />
+    <!-- Barra de búsqueda -->
+    <div class="search-section">
+      <input
+        type="text"
+        v-model="searchQuery"
+        placeholder="Escriba nombre, código o unidad de medida"
+        class="search-input"
+      />
+      <button @click="searchInsumos">Buscar</button>
+    </div>
 
-          <label>Disponible:</label>
-          <input v-model="currentInsumo.is_available" type="number" />
-  
-          <div class="modal-buttons">
-            <button @click="saveInsumo">{{ isEditing ? "Guardar" : "Agregar" }}</button>
-            <button @click="closeModal">Cancelar</button>
-          </div>
+    <!-- Botón para agregar insumo -->
+    <button @click="openAddInsumo" class="add-button">Agregar Insumo</button>
+
+    <!-- Contenedor de tabla de insumos con scroll -->
+    <div class="table-container">
+      <table class="product-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Costo</th>
+            <th>Cantidad en tienda</th>
+            <th>Cantidad capturada</th>
+            <th>Unidad de medida</th>
+            <th>Disponibe</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(insumo, index) in filteredInsumos" :key="index">
+            <td>{{ insumo.nombre }}</td>
+            <td>{{ insumo.costo }}</td>
+            <td>{{ insumo.cantidad_tienda }}</td>
+            <td>{{ insumo.cantidad_captura }}</td>
+            <td>{{ insumo.unidad_medida }}</td>
+            <td>{{ insumo.is_available }}</td>
+            <td>
+              <button @click="editInsumo(insumo)" class="edit-button">Modificar</button>
+            </td>
+            <td>
+              <button @click="deleteInsumo(insumo.id)" class="delete-button">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modal para agregar/modificar insumo -->
+    <div v-if="showModal" class="modal-overlay">
+      <div class="modal">
+        <h3>{{ isEditing ? "Modificar Insumo" : "Agregar Insumo" }}</h3>
+        <label>Nombre:</label>
+        <input v-model="currentInsumo.nombre" type="text" />
+
+        <label>Costo:</label>
+        <input v-model="currentInsumo.costo" type="number" />
+
+        <label>Cantidad en tienda:</label>
+        <input v-model="currentInsumo.cantidad_tienda" type="number" />
+        
+        <label>Cantidad capturada:</label>
+        <input v-model="currentInsumo.cantidad_captura" type="number" />
+
+        <label>Unidad de medida:</label>
+        <input v-model="currentInsumo.unidad_medida" type="text" />
+
+        <div class="modal-buttons">
+          <button @click="saveInsumo">{{ isEditing ? "Guardar" : "Agregar" }}</button>
+          <button @click="closeModal">Cancelar</button>
         </div>
       </div>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref, onMounted } from 'vue';
-  import { fetchInsumos, insertarInsumo, actualizarInsumo} from '../api';
-  
-  interface Insumo {
-    id: number;
-    nombre: string;
-    costo: number;
-    cantidad_tienda: number;
-    cantidad_captura?: number; // Opcional si no se utiliza siempre
-    unidad_medida: string;
-    is_available: boolean;
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { fetchInsumos, insertarInsumo, actualizarInsumo, eliminarInsumo } from '../api';
+
+interface Insumo {
+  id: number;
+  nombre: string;
+  costo: number;
+  cantidad_tienda: number;
+  cantidad_captura?: number; // Opcional si no se utiliza siempre
+  unidad_medida: string;
+  is_available: boolean;
+}
+
+// Variables reactivas
+const insumos = ref<Insumo[]>([]);
+const filteredInsumos = ref<Insumo[]>([]);
+const searchQuery = ref('');
+const showModal = ref(false);
+const isEditing = ref(false);
+
+// Asegúrate de inicializar todos los campos de `currentInsumo`
+const currentInsumo = ref<Partial<Insumo>>({
+  id: 0,
+  nombre: '',
+  costo: 0,
+  cantidad_tienda: 0,
+  cantidad_captura: 0,
+  unidad_medida: '',
+  is_available: true,
+});
+
+// Métodos
+const obtenerInsumos = async () => {
+  try {
+    insumos.value = await fetchInsumos();
+    searchInsumos(); // Filtra con base en la consulta actual (si existe)
+  } catch (error) {
+    console.error('Error al obtener insumos:', error);
   }
-  
-  // Variables reactivas
-  const insumos = ref<Insumo[]>([]);
-  const filteredInsumos = ref<Insumo[]>([]);
-  const searchQuery = ref('');
-  const showModal = ref(false);
-  const isEditing = ref(false);
-  
-  // Asegúrate de inicializar todos los campos de `currentInsumo`
-  const currentInsumo = ref<Partial<Insumo>>({
+};
+
+const searchInsumos = () => {
+  filteredInsumos.value = insumos.value.filter((insumo) =>
+    insumo.nombre.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+};
+
+const openAddInsumo = () => {
+  isEditing.value = false;
+  currentInsumo.value = {
     id: 0,
     nombre: '',
     costo: 0,
@@ -111,66 +136,66 @@
     cantidad_captura: 0,
     unidad_medida: '',
     is_available: true,
-  });
-  
-  // Métodos
-  const obtenerInsumos = async () => {
-    try {
-      insumos.value = await fetchInsumos();
-      searchInsumos(); // Filtra con base en la consulta actual (si existe)
-    } catch (error) {
-      console.error('Error al obtener insumos:', error);
-    }
   };
-  
-  const searchInsumos = () => {
-    filteredInsumos.value = insumos.value.filter((insumo) =>
-      insumo.nombre.toLowerCase().includes(searchQuery.value.toLowerCase())
-    );
-  };
-  
-  const openAddInsumo = () => {
-    isEditing.value = false;
-    currentInsumo.value = {
-      id: 0,
-      nombre: '',
-      costo: 0,
-      cantidad_tienda: 0,
-      cantidad_captura: 0,
-      unidad_medida: '',
-      is_available: true,
-    };
-    showModal.value = true;
-  };
-  
-  const editInsumo = (insumo: Insumo) => {
-    isEditing.value = true;
-    currentInsumo.value = { ...insumo };
-    showModal.value = true;
-  };
-  
-  const saveInsumo = () => {
+  showModal.value = true;
+};
+
+const editInsumo = (insumo: Insumo) => {
+  isEditing.value = true;
+  currentInsumo.value = { ...insumo };
+  showModal.value = true;
+};
+
+const saveInsumo = async () => {
+  try {
     if (isEditing.value) {
-      const index = insumos.value.findIndex((i) => i.id === currentInsumo.value.id);
-      if (index !== -1) {
-        actualizarInsumo(currentInsumo.value.id || 0, 1,  currentInsumo.value.nombre || '', currentInsumo.value.costo || 0, currentInsumo.value.cantidad_tienda || 0, currentInsumo.value.cantidad_captura || 0, currentInsumo.value.unidad_medida || '', currentInsumo.value.is_available || true);
-      }
+      await actualizarInsumo(
+        currentInsumo.value.id || 0,
+        1,
+        currentInsumo.value.nombre || '',
+        currentInsumo.value.costo || 0,
+        currentInsumo.value.cantidad_tienda || 0,
+        currentInsumo.value.cantidad_captura || 0,
+        currentInsumo.value.unidad_medida || '',
+        true
+      );
     } else {
-      insertarInsumo(1, currentInsumo.value.nombre || '', currentInsumo.value.costo || 0, currentInsumo.value.cantidad_tienda || 0, currentInsumo.value.cantidad_captura || 0, currentInsumo.value.unidad_medida || '', currentInsumo.value.is_available || true); 
+      await insertarInsumo(
+        1,
+        currentInsumo.value.nombre || '',
+        currentInsumo.value.costo || 0,
+        currentInsumo.value.cantidad_tienda || 0,
+        currentInsumo.value.cantidad_captura || 0,
+        currentInsumo.value.unidad_medida || '',
+        true
+      );
     }
     closeModal();
     obtenerInsumos();
-  };
-  
-  const closeModal = () => {
-    showModal.value = false;
-  };
-  
-  // Ejecuta al montar el componente
-  onMounted(() => {
+  } catch (error) {
+    console.error('Error al guardar el insumo:', error);
+  }
+};
+
+const deleteInsumo = async (id: number) => {
+  try {
+    await eliminarInsumo(id);
     obtenerInsumos();
-  });
-  </script>
+  } catch (error) {
+    console.error('Error al eliminar insumo:', error);
+  }
+};
+
+const closeModal = () => {
+  showModal.value = false;
+};
+
+// Ejecuta al montar el componente
+onMounted(() => {
+  obtenerInsumos();
+});
+</script>
+
   
   
   <style scoped>

@@ -32,7 +32,7 @@
       <table>
         <thead>
           <tr>
-            <th>Mes</th>
+            <th>Producto/Mes</th>
             <th>Ventas Enero</th>
             <th>Ventas Febrero</th>
             <th>Ventas Marzo</th>

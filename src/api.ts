@@ -1,5 +1,4 @@
 // src/api.ts
-import { useRouter } from 'vue-router';
 import { login, logout } from './store';
 import datos from './tablas.json';
 import { ref } from 'vue';
@@ -24,7 +23,7 @@ const headers: Record<string, string> = { 'Content-Type': 'application/json;char
 export const usuarios = ref<User[]>([]);
 
 // funcion para hacer login
-export async function handleLogin(email: string, password: string, router: ReturnType<typeof useRouter>) {
+export async function handleLogin(email: string, password: string) {
 
   try {
     await axios.get(BASE_URL + "/sanctum/csrf-cookie", {
@@ -36,7 +35,7 @@ export async function handleLogin(email: string, password: string, router: Retur
     
     if (response.status === 204 || response.status === 200) {
       login();
-      router.push('/'); 
+      
     } 
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -54,7 +53,6 @@ export async function handleLogin(email: string, password: string, router: Retur
 
 // funcion para hacer registro de usuario
 export async function handleRegister(name: string, email: string, password: string, password_confirmation: string) {
-  const router = useRouter();
 
   try {
     await axios.get(BASE_URL + "/sanctum/csrf-cookie", {
@@ -67,7 +65,6 @@ export async function handleRegister(name: string, email: string, password: stri
     if (response.status === 204 || response.status === 200) {
       alert("Bienvenido "+name);
       login();
-      router.push('/');
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -86,14 +83,14 @@ export async function handleRegister(name: string, email: string, password: stri
 
 
 // funcion para cerrar sesion
-export async function handleLogout(router: ReturnType<typeof useRouter>) {
+export async function handleLogout() {
 
   try {
     const response = await axios.post(BASE_URL + '/logout', {}, { headers });
 
     if (response.status === 204 || response.status === 200) {
       logout();
-      router.push('/login');
+      
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -323,18 +320,20 @@ export const fetchOrdenVenta = async () => {
   return response.data.ordenes;
 };
 
+export const fetchOrdenCanceladas = async () => {
+  const response = await axios.get(BASE_URL+ '/api/data/orden-cancelada');
+  return response.data.ordenes;
+};
+
 //funcion para eliminar orden
 export async function deleteOrder(
   
     id: number,
-    tipo_pago: string,
-    is_registerd: number,
+    is_registered: number,
   
 ) {
   try {
-    const response = await axios.put(`${BASE_URL}/api/update/ordenes/${id}`, { 
-      tipo_pago, is_registerd
-    });
+    const response = await axios.put(`${BASE_URL}/api/update/ordenes/${id}`, { is_registered});
     
     return response.data;  // Devuelve el ID del insumo actualizado
   } catch (error) {
@@ -345,4 +344,13 @@ export async function deleteOrder(
 
 
 
-
+export async function eliminarInsumo(id: number) {
+  try {
+    const response = await axios.delete(BASE_URL+`/api/delete/insumos/${id}`);
+    console.log("Insumo eliminado con éxito, ID:", response.data.id);
+    return response.data;  // Devuelve el ID del usuario eliminado
+  } catch (error) {
+    console.error("Error al eliminar usuario:", error);
+    return null; // Retorna null en caso de error
+  }
+}
